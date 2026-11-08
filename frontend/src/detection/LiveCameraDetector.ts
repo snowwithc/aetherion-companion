@@ -8,7 +8,6 @@
 import { config } from '@/engine';
 import { emptySnapshot, type CardDetector, type DetectorStatus, type ZoneEvent, type ZoneSnapshot } from './types';
 import { analyseFrame, ZoneDebouncer, type PipelineOutput } from './vision/pipeline';
-import { classifierStatus } from './vision/onnx';
 
 /** True when a static file really exists (the dev server answers unknown paths with index.html). */
 export async function assetExists(url: string): Promise<boolean> {
@@ -102,17 +101,12 @@ export class LiveCameraDetector implements CardDetector {
     this.telemetry.video = this.video;
     this.telemetry.canvas = this.canvas;
     this.loop();
-    // warm the classifier in the background
-    void classifierStatus();
-    const classifier = await classifierStatus();
     this.notifyTelemetry();
     return {
       available: true,
       cameraFound: true,
-      modelFound: classifier.available,
-      message: classifier.available
-        ? 'Kamera siap. Model AI aktif sebagai cadangan.'
-        : 'Kamera siap. Pakai marker ArUco - model AI belum dipasang.',
+      modelFound: false,
+      message: 'Kamera siap. Arahkan ke marker ArUco di meja untuk mulai.',
     };
   }
 
