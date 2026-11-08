@@ -7,7 +7,7 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { motion, useAnimationControls } from 'framer-motion';
 import { elements, getActivation, getCharacter } from '@/engine';
-import { assetExists } from '@/detection/LiveCameraDetector';
+import { assetExists } from '@/lib/assetExists';
 import { useGame } from '@/store/GameProvider';
 import { cn } from '@/lib/utils';
 import { characterArt, characterModel } from './assets';

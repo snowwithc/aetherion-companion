@@ -226,4 +226,15 @@ const configureDevServer = webpackConfig.devServer;
 webpackConfig.devServer = (devServerConfig) =>
   makeDevServerV5Compatible(configureDevServer(devServerConfig));
 
+// Jest: resolve the same "@/..." alias webpack uses, so unit tests can import app modules.
+webpackConfig.jest = {
+  configure: (jestConfig) => ({
+    ...jestConfig,
+    moduleNameMapper: {
+      ...(jestConfig.moduleNameMapper || {}),
+      "^@/(.*)$": "<rootDir>/src/$1",
+    },
+  }),
+};
+
 module.exports = webpackConfig;

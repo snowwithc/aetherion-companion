@@ -1,23 +1,47 @@
 {
-  "_comment": "Campaign: episodes are unlocked in order. waves = enemy ids from enemies.json (the last one is the boss).",
+  "_comment": "Campaign: episodes are unlocked in order. waves = enemy ids from enemies.json (the last one is the boss). Briefing fields drive the animated intro cards (Bahasa Indonesia).",
   "episodes": [
     {
-      "id": "ep1", "number": 1, "name": "Pollution Rising",
+      "id": "ep1",
+      "number": 1,
+      "name": "Pollution Rising",
       "subtitle": "Smog is choking the city skies.",
       "waves": ["smog_wisp", "oil_slick", "smog_titan"],
-      "stemFact": "Fine smog particles (PM2.5) are about 30 times thinner than a human hair, small enough to slip deep into the lungs."
+      "stemFact": "Fine smog particles (PM2.5) are about 30 times thinner than a human hair, small enough to slip deep into the lungs.",
+      "briefing": {
+        "codename": "OPERASI LANGIT JERNIH",
+        "intro": "Kabut asap tebal menyelimuti kota. Sensor udara menjerit merah. Warga tak lagi bisa melihat matahari pagi.",
+        "objective": "Bersihkan tiga gelombang polutan sebelum atmosfer runtuh. Hentikan Smog Titan - raksasa jelaga yang memerintah langit.",
+        "tacticTip": "Serangan Energi terbarukan menembus partikel polusi lebih efektif daripada serangan fisik. Fusi Angin + Surya mempercepat pembersihan."
+      }
     },
     {
-      "id": "ep2", "number": 2, "name": "Fossil Fuel Fortress",
+      "id": "ep2",
+      "number": 2,
+      "name": "Fossil Fuel Fortress",
       "subtitle": "Storm the stronghold of coal and fumes.",
       "waves": ["coal_golem", "fume_drone", "furnace_colossus"],
-      "stemFact": "Coal is made from plants that lived around 300 million years ago, buried and squeezed for ages, which is why it is called a fossil fuel."
+      "stemFact": "Coal is made from plants that lived around 300 million years ago, buried and squeezed for ages, which is why it is called a fossil fuel.",
+      "briefing": {
+        "codename": "OPERASI BENTENG BARA",
+        "intro": "Benteng bahan bakar fosil berdiri angkuh di cakrawala. Cerobongnya memuntahkan karbon tanpa henti ke atmosfer.",
+        "objective": "Tembus pertahanan Golem Batu Bara, lumpuhkan dron asap, lalu runtuhkan Furnace Colossus - jantung tungku raksasa itu.",
+        "tacticTip": "Pakai Booster Pertahanan untuk menahan serangan api. Simpan Fusi pamungkas untuk bos dengan HP tinggi."
+      }
     },
     {
-      "id": "ep3", "number": 3, "name": "The Great Blackout",
+      "id": "ep3",
+      "number": 3,
+      "name": "The Great Blackout",
       "subtitle": "Bring the light back to the grid.",
       "waves": ["blackout_wraith", "grid_parasite", "fossil_king"],
-      "stemFact": "A power grid must balance supply and demand every second. Batteries and pumped hydro store spare clean energy for when it is needed."
+      "stemFact": "A power grid must balance supply and demand every second. Batteries and pumped hydro store spare clean energy for when it is needed.",
+      "briefing": {
+        "codename": "OPERASI NYALAKAN KEMBALI",
+        "intro": "Satu demi satu kota padam. Jaringan listrik koyak oleh parasit energi. Di kegelapan, Raja Fosil bersiap merebut dunia.",
+        "objective": "Usir Blackout Wraith, cabut Grid Parasite dari jalur transmisi, lalu kalahkan Fossil King untuk memulihkan grid bersih.",
+        "tacticTip": "Isi Ulang sesering mungkin - bos ini melahap Energi. Fusi Air + Surya memberi serangan tertinggi melawan Raja Fosil."
+      }
     }
   ]
 }

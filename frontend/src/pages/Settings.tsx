@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, Camera, HandMetal, Languages, Trash2, Volume2, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { Screen, GameButton } from '@/components/game/Screen';
+import { PrintSheetButton } from '@/components/game/PrintSheetButton';
 import { Switch } from '@/components/ui/typed';
 import { useGame } from '@/store/GameProvider';
 import { t } from '@/i18n/id';
@@ -80,6 +81,11 @@ export default function SettingsPage() {
               testId="settings-debug-overlay-toggle"
             />
           </div>
+        </Section>
+
+        <Section title={t.print.section}>
+          <p className="mb-2 text-xs text-[hsl(var(--text-dim))]" data-testid="settings-print-hint">{t.print.hint}</p>
+          <PrintSheetButton testId="settings-download-calibration-pdf-button" />
         </Section>
 
         <Section title={t.settings.language}>

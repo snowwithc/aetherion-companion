@@ -73,7 +73,7 @@ export default function ResultsPage() {
       }
       const run = newRun(nextId);
       updateProgress((p) => ({ ...p, run, battle: null, lastResult: null }));
-      navigate('/setup');
+      navigate(`/briefing/${nextId}`);
     };
     return (
       <Screen title={t.results.victory} subtitle={t.results.victorySub} back={() => navigate('/map')} testId="results-victory-screen">

@@ -1,19 +1,35 @@
-# plan.md — Aetherion Companion (Phase 1 ✅ complete → Phase 2 ✅2a shipped → Phase 2b/2c next)
+# plan.md — Aetherion Companion (Phase 1 ✅ complete → Phase 2 ✅2a→2b→2c→2d complete → Deploy next)
 
 ## 1) Objectives
 - ✅ Deliver a fully playable **3-episode campaign** in **Manual Simulator mode** (no camera), with all rules implemented in a **pure TS engine** (`/src/engine`) separated from UI.
 - ✅ Keep all balance/content in editable JSON under `/src/data`.
 - ✅ Persist progress in **localStorage** (no backend, no login).
 - ✅ Mobile-first UI (React + Tailwind + Framer Motion) with simple CSS animations.
-- ✅ Default UI language is **Bahasa Indonesia** (hardcoded first pass; full i18n deferred).
+- ✅ UI language is **Bahasa Indonesia** (hardcoded first pass; full i18n deferred).
 
 - ✅ **Phase 2 objective (approved) — Live Camera Detection for rear phone camera**
   - ✅ Primary detection: **ArUco markers** via `js-aruco` (reliable, deterministic)
-  - ✅ Table calibration: **4 corner markers (0–3)**
+  - ✅ Table calibration: **4 corner markers** (printed mat)
   - ✅ Same `CardDetector` interface so engine/UI don’t care about source (manual vs camera)
-  - ✅ **Debug overlay ON by default during development** (markers + status)
-  - ⏳ Fallback detection: **YOLOv8n ONNX** classifier (only if model file exists) — scaffold present, not activated without model.
-  - ⏳ Proper top-down warp + per-zone crops (homography) — planned for Phase 2b.
+  - ✅ Debug overlay supported (markers + status)
+  - ✅ **Tilt-resistant detection**: top-down warp (homography)
+  - ✅ Printable calibration/sticker PDFs (in-app generated)
+  - ✅ AI fallback dropped: user requested YOLOv8n nano originally, but **deployment constraints forbid ONNX**.
+    - Decision: keep marker-first deterministic system as production baseline.
+
+- ✅ **Phase 2d — Mission Briefings (Episode intro)**
+  - ✅ Cinematic, sci-fi “transmission” animated briefing for each episode.
+  - ✅ **User-confirmed behavior implemented**:
+    - ✅ Briefing shows **every time** an episode is started (Start/Replay/Resume), and when advancing to the next episode.
+    - ✅ Style: **sinematik bertahap — sci‑fi hype**.
+  - ✅ All UI strings remain **Bahasa Indonesia** via `src/i18n/id.ts`.
+
+- ⏳ **Deploy**
+  - Goal: publish a live URL for real-device camera QA (ArUco detection + homography + printed calibration mat).
+  - ✅ Deployment readiness scan PASS.
+  - Next: user presses **Deploy** in Emergent UI.
+
+---
 
 ## 2) Implementation Steps
 
@@ -26,7 +42,7 @@
 5. Enemy intent is always visible and enemy move loop executes correctly.
 
 **Status / Work Done**
-- ✅ Frontend TypeScript enabled (CRA + craco).
+- ✅ Frontend TypeScript enabled.
 - ✅ `/src/data/*.json` created for all content.
 - ✅ Pure `/src/engine` implemented (battle loop, combat math, statuses, fusions, scenarios, boosters, AI, campaign helpers).
 - ✅ Engine unit tests: `src/engine/__tests__/engine.test.ts` **24/24 passing**.
@@ -36,7 +52,7 @@
 1. Start/continue a campaign and progress is saved/restored from localStorage.
 2. Use Setup in **Manual mode** to place cards into zones and see what the app detects.
 3. Play the Battle screen comfortably on phone with large buttons and readable log.
-4. View all cards in the Library including the 10×5 fusion matrix.
+4. View all cards in the Library including the fusion matrix.
 5. Reset progress and change settings without breaking the run.
 
 **Status / Work Done**
@@ -45,171 +61,147 @@
 - ✅ Detection layer:
   - ✅ `CardDetector` contract implemented.
   - ✅ `ManualSimulatorDetector` implemented.
-  - ✅ `LiveCameraDetector` implemented (Phase 2a) — no longer a stub.
+  - ✅ `LiveCameraDetector` implemented.
 - ✅ Setup screen supports Manual character selection (places Character in Zone A).
 - ✅ Battle screen wired via `useBattleController`.
-- ✅ Card Library includes Fusion Matrix + detail dialog.
+- ✅ Card Library includes fusion matrix + detail dialogs.
 - ✅ Settings includes toggles + reset progress.
 - ✅ Bahasa Indonesia copy centralized in `src/i18n/id.ts`.
 - ✅ Automated frontend playtests:
-  - ✅ Phase 1 playtest (Manual mode) passed (no critical issues).
-  - ✅ Phase 2a regression playtest passed (no regressions; camera UI gracefully falls back in headless).
+  - ✅ Phase 1 playtest passed (no critical issues).
 
 ---
 
-### Phase 2 — Live Camera Detection (Rear Camera + ArUco + optional YOLOv8n)
+### Phase 2 — Live Camera Detection (Rear Camera + ArUco markers)
 
-#### Architecture (implemented + planned)
-**Implemented (Phase 2a)**
+#### Critical clarifications (locked-in requirements)
+- **Markers must be placed on the FRONT of each physical card** (cards are face-up under the camera).
+- `js-aruco` uses an original 5×5 ArUco-like dictionary (IDs 0–1023). Rotation safety matters.
+- `markers.json` IDs must remain **rotation-safe**.
+  - ✅ Mapping updated to IDs with **≥ 5 bit margin under 90/180/270° rotation**.
+- **Do not re-introduce `onnxruntime-web`** (deployment blocker).
+
+---
+
+#### Architecture (implemented)
 - ✅ `/src/detection/vision/`
-  - ✅ `aruco.ts` — wrapper around `js-aruco` (marker detection)
-  - ✅ `pipeline.ts` — frame analysis + corner-based zone mapping + debouncing (`ZoneDebouncer`)
-  - ✅ `onnx.ts` — ONNX scaffold present (lazy load), inert when model missing
-  - ✅ `homography.ts` — implemented as a math helper (not yet used for warp)
+  - ✅ ArUco wrapper + analysis pipeline
+  - ✅ Homography warp utilities (`warp.ts`) integrated into pipeline
 - ✅ `/src/detection/LiveCameraDetector.ts`
-  - ✅ Real `getUserMedia` rear-camera request (facingMode: environment)
-  - ✅ Frame loop at `config.detection.fps`
-  - ✅ Emits `ZoneEvent` for stable changes
-  - ✅ Exposes telemetry (fps, markers found, calibrated, lastFrame) via `subscribeTelemetry`
+  - ✅ `getUserMedia` rear-camera request (facingMode: environment)
+  - ✅ frame loop at configured FPS
+  - ✅ emits `ZoneEvent` for stable zone changes
+  - ✅ telemetry exposed for overlays
 - ✅ `/src/data/markers.json`
-  - ✅ Corner markers: 0–3
-  - ✅ Card markers mapping created (IDs 100+ mapped to cardIds)
-- ✅ UI:
-  - ✅ `CameraPreview.tsx` — mounts live `<video>` and draws overlay (markers + calibration)
-  - ✅ `DebugOverlay.tsx` — developer-facing readings (zones, fps, calibration)
-
-**Planned (Phase 2b/2c)**
-- ⏳ Warp to top-down using corners (homography) + per-zone crops
-- ⏳ ONNX classification fallback on crops (YOLOv8n ONNX), only when a model file is present
-- ⏳ Printable calibration PDF for corner markers + optional card marker sheet
-
-#### UI integration (implemented)
-- ✅ `GameProvider.tsx`
-  - ✅ Swaps active detector based on `settings.detectionMode`
-  - ✅ Starts/stops camera as mode changes
-  - ✅ Graceful fallback to manual when permission denied/unavailable (toast + mode revert)
-- ✅ `Settings.tsx`
-  - ✅ Camera mode selection is enabled (no longer disabled)
-  - ✅ Debug overlay default ON (dev-friendly)
-- ✅ `Setup.tsx`
-  - ✅ Added “Deteksi Kartu” panel
-  - ✅ Camera preview shown in camera mode
-  - ✅ Character picker hidden in camera mode (character chosen by physical card)
-- ✅ `Battle.tsx`
-  - ✅ Uses active detector from provider
-  - ✅ Optional camera preview + debug overlay section when camera mode is active
+  - ✅ rotation-safe IDs allocated for:
+    - ✅ corners
+    - ✅ 35 card markers
 
 ---
 
-#### Phase 2a — (Push 1) Camera open + ArUco detection + zone events + debug overlay
-**Goal:** Get reliable marker detection and zone events end-to-end (no warp yet).
+#### Phase 2a — Camera open + ArUco detection + zone events + debug overlay
+**Goal:** End-to-end marker detection and zone events.
 
-**Status:** ✅ Shipped and validated.
+**Status:** ✅ Done.
 
 **What was delivered**
-- ✅ Rear camera mode toggle in Settings
-- ✅ Live camera stream acquisition (`getUserMedia`)
-- ✅ ArUco marker detection via `js-aruco`
-- ✅ Calibration requirement: 4 corner markers visible → `calibrated=true`
-- ✅ Zone mapping relative to corner markers (splitting mat into 4 vertical zones)
-- ✅ Stable zone events via `ZoneDebouncer` (register/clear frames)
-- ✅ Debug UI:
-  - ✅ Overlay on preview showing marker polygons + IDs
-  - ✅ Debug panel with zone readings + fps
-- ✅ Graceful fallback to Manual if camera is denied/unavailable
+- ✅ Rear camera mode toggle in Settings.
+- ✅ Live camera stream acquisition (`getUserMedia`).
+- ✅ ArUco marker detection via `js-aruco`.
+- ✅ Corner-based calibration gating.
+- ✅ Stable zone events via `ZoneDebouncer`.
+- ✅ Debug overlay.
+- ✅ Graceful fallback to Manual if camera denied/unavailable.
+- ✅ Removed ONNX runtime dependency.
 
 **Exit criteria:** ✅ Met.
 
 ---
 
-#### Phase 2b — Homography warp + per-zone crops + ONNX activation (YOLOv8n)
-**Goal:** Proper top-down mat warp and robust per-zone image crops for better accuracy and to enable ONNX fallback.
+#### Phase 2b — Homography warp (tilt-resistant)
+**Goal:** Make detection accurate when the phone is tilted.
 
-**User stories**
-1. When corner markers 0–3 are visible, the app warps camera view to a top-down mat.
-2. Each zone A–D has a stable crop extracted from the warped mat (shown in debug overlay).
-3. If an ONNX model exists, classifier runs on zone crops and reports top label + confidence.
-4. Marker-first stays authoritative; ONNX only fills gaps when a marker is occluded.
+**Status:** ✅ Done.
 
-**Implementation steps**
-- Use `vision/homography.ts` to compute a transform from corner markers → canonical mat rectangle.
-- Add a warp step (Canvas2D approach first; WebGL optional later):
-  - Produce a top-down “mat” canvas at a fixed resolution (e.g., 1024×256 or 960×240).
-  - Define zone rectangles for A–D in mat coordinates.
-- Enhance `vision/pipeline.ts`:
-  - If corners locked: warp frame → mat space.
-  - Crop each zone (A–D) into ImageData.
-  - Marker-first:
-    - If marker is detected and its center lies inside a zone crop → assign cardId.
-  - ONNX fallback:
-    - If no marker assigned in a zone, and `onnx.ts` reports available → classify crop.
-    - Apply confidence threshold + debouncing.
-- Enhance `DebugOverlay.tsx`:
-  - Show warped mat preview and zone crops.
-  - Show per-zone confidence (marker vs ONNX).
+**What was delivered**
+- ✅ Top-down warp (homography) so zone assignment stays stable under tilt.
+- ✅ Unit tests validating tilted mapping correctness.
 
-**Exit criteria**
-- Calibration lock works reliably.
-- Crops are stable and match physical zones.
-- ONNX remains inert when model missing (no perf penalty).
+**Exit criteria:** ✅ Met.
 
 ---
 
-#### Phase 2c — Printable calibration PDF (corner + optional card markers)
-**Goal:** Make physical setup repeatable for classrooms/players.
+#### Phase 2c — Calibration PDF + sticker sheet generation
+**Goal:** Physical setup becomes repeatable (classrooms, quick start).
+
+**Status:** ✅ Done.
 
 **Deliverables**
-- Printable PDF (A4/Letter) containing:
-  - 4 large corner markers (0–3) positioned for easy camera visibility
-  - Optional guide grid indicating Zones A–D
-  - Optional small card markers sheet (IDs 100–139) with instructions for attaching
+- ✅ In-app generated PDF kit via `jspdf`:
+  1. ✅ Calibration mat (A4 landscape) with 4 corner markers + zones.
+  2. ✅ Sticker sheet (A4 portrait) with all 35 card markers.
+- ✅ Rotation-safe ID allocation preserved and tested.
+- ✅ Automated verification:
+  - ✅ Jest tests for PDF generation
+  - ✅ External decode checks via Python (`PyMuPDF`) on simulated camera tilt
 
-**Implementation steps**
-- Add `/public/print/calibration.pdf` (generated via a script or static asset).
-- Add Setup screen CTA: “Unduh lembar kalibrasi”.
-- Include short in-app instructions for:
-  - Lighting tips
-  - Distance/angle tips
-  - What “kalibrasi OK” means
-
-**Exit criteria**
-- A user can print once, place the sheet, and camera calibrates quickly.
+**Exit criteria:** ✅ Met.
 
 ---
 
-### Phase 3 — Testing & Hardening (expanded to include camera)
-**User stories**
-1. Full campaign playable without crash or soft-lock in both Manual and Camera mode.
-2. Close/reopen and continue mid-battle accurately.
-3. Camera mode handles: permission denial, autofocus hunting, low light, partial occlusion.
-4. Wrong-zone placement is ignored and warned.
-5. Performance: usable on mid-range phones.
+### Phase 2d — Mission Briefings (Episode intro screens)
+**Goal:** Add an episode intro screen that makes the campaign feel like a narrative and hypes the STEM theme.
 
-**Steps**
-- Keep engine unit tests passing.
-- Add camera-focused checks:
-  - `markers.json` completeness and uniqueness
-  - Debouncer behavior on noisy detection
-  - Calibration state transitions (not calibrated → calibrated → lost)
-- Manual QA on real phone (rear camera):
-  - Setup calibration flow
-  - 10–15 minute play session
-  - Battery/thermal check
+**Status:** ✅ Done.
+
+**What was delivered**
+- ✅ New page `src/pages/Briefing.tsx`:
+  - Cinematic “incoming transmission” layout with staged reveal (Framer Motion).
+  - Typewriter-style reveals for key lines.
+  - Respects reduced-motion/low-graphics (animations disabled appropriately).
+- ✅ Data integration:
+  - `src/data/campaign.json` extended with episode-level `briefing` fields:
+    - `codename`, `intro`, `objective`, `tacticTip` (Bahasa Indonesia).
+  - `EpisodeDef` extended with optional `briefing` block.
+- ✅ Routing:
+  - `/briefing/:episodeId` (plus `/briefing` fallback) added to router.
+- ✅ Flow integration:
+  - Map Start/Replay/Resume → `/briefing/:episodeId`.
+  - Results “Episode Berikutnya” → `/briefing/:nextEpisodeId`.
+- ✅ UI copy:
+  - `src/i18n/id.ts` extended under `briefing` for additional labels.
+- ✅ Bug fix:
+  - Fixed Typewriter runtime error (`Cannot create property '_iv' on number ...`) via proper timer cleanup.
+
+**Frontend testing**
+- ✅ `testing_agent_v3` completed: **14/14 passed**, frontend success **100%**.
+- ✅ Verified: no runtime error overlays on briefing pages.
+
+**Exit criteria:** ✅ Met.
+
+---
 
 ## 3) Next Actions
-1. ✅ Phase 2a is done (camera mode toggle, ArUco detection, debouncing, debug overlay, fallback).
-2. **Confirm with user** the intended physical marker strategy for cards:
-   - Are markers attached to each card (preferred for reliability), or only the mat corners?
-3. Implement **Phase 2b**:
-   - top-down warp + per-zone crops
-   - enable ONNX fallback when model file exists (YOLOv8n)
-4. Implement **Phase 2c**:
-   - printable calibration PDF + in-app instructions
-5. Run real-device QA and patch issues.
+1. ⏳ **Publish / Deploy**
+   - User presses **Deploy** in Emergent UI.
+   - Capture and share the live URL.
+2. ⏳ Real-device QA checklist (phone camera)
+   - camera permission prompt works
+   - 4 corners recognized and calibration locks
+   - warp view stable under normal tilt
+   - stickers detectable at typical distance/lighting
+   - mission briefings flow: Map → Briefing → Setup works on-device
+3. ⏳ Phase 2c print QA
+   - Print the PDF on A4 at **100% scale**
+   - Confirm markers scan reliably under indoor lighting
+
+---
 
 ## 4) Success Criteria
 - ✅ Phase 1 remains fully playable in Manual mode.
-- ✅ Phase 2a: camera mode works with ArUco markers + corner calibration + stable zone events.
-- Phase 2b: camera mode gains top-down warp + robust crops; ONNX fallback works when model present.
-- Phase 2c: players can print a calibration sheet and set up quickly.
+- ✅ Phase 2a: camera mode works with ArUco markers + corner calibration + stable zone events + debug overlay.
+- ✅ Phase 2b: camera mode gains **tilt-resistant warping** + **mm-accurate zone mapping**.
+- ✅ Phase 2c: players can print calibration mat + card sticker sheet and set up quickly.
+- ✅ Phase 2d: Mission briefings add narrative + STEM/tactics without slowing the core loop.
+- ⏳ Deployed: live URL available for user playtest on a real phone.
 - No backend required; localStorage persistence remains intact.

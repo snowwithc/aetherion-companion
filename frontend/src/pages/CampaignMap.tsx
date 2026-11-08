@@ -37,7 +37,7 @@ export default function CampaignMapPage() {
     const activeRun = progress.run?.episodeId === episodeId ? progress.run : null;
     const run = activeRun ?? newRun(episodeId);
     updateProgress((p) => ({ ...p, run }));
-    navigate('/setup');
+    navigate(`/briefing/${episodeId}`);
   };
 
   const onReset = () => {

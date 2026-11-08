@@ -17,6 +17,7 @@ import { MatPreview } from '@/components/game/MatPreview';
 import { CardFace } from '@/components/game/CardFace';
 import { CameraPreview } from '@/components/game/CameraPreview';
 import { DebugOverlay } from '@/components/game/DebugOverlay';
+import { PrintSheetButton } from '@/components/game/PrintSheetButton';
 import { EnemyFigure } from '@/components/game/EnemyFigure';
 import { ELEMENT_ICON } from '@/components/game/icons';
 import { cn } from '@/lib/utils';
@@ -124,8 +125,11 @@ export default function SetupPage() {
           </div>
           {cameraActive ? (
             <>
-              <div className="relative aspect-[16/9] w-full">
-                <CameraPreview detector={camera} showOverlay testId="setup-camera-preview" className="absolute inset-0" />
+              <CameraPreview detector={camera} showOverlay testId="setup-camera-preview" />
+              <p className="mt-2 text-xs text-[hsl(var(--text-dim))]" data-testid="setup-camera-tip">{t.camera.tipRotate}</p>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-[hsl(var(--text-dim))]">
+                <span>{t.print.noSheet}</span>
+                <PrintSheetButton compact testId="setup-download-calibration-pdf-button" />
               </div>
               {settings.debugOverlay ? <div className="mt-2"><DebugOverlay detector={camera} /></div> : null}
             </>

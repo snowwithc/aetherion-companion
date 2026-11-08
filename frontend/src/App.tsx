@@ -10,6 +10,7 @@ import '@/App.css';
 
 const TitlePage = lazy(() => import('@/pages/Title'));
 const CampaignMapPage = lazy(() => import('@/pages/CampaignMap'));
+const BriefingPage = lazy(() => import('@/pages/Briefing'));
 const SetupPage = lazy(() => import('@/pages/Setup'));
 const BattlePage = lazy(() => import('@/pages/Battle'));
 const ResultsPage = lazy(() => import('@/pages/Results'));
@@ -49,6 +50,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<TitlePage />} />
             <Route path="/map" element={<CampaignMapPage />} />
+            <Route path="/briefing/:episodeId" element={<BriefingPage />} />
+            <Route path="/briefing" element={<BriefingPage />} />
             <Route path="/setup" element={<SetupPage />} />
             <Route path="/battle" element={<BattlePage />} />
             <Route path="/results" element={<ResultsPage />} />

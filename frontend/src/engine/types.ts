@@ -144,6 +144,13 @@ export interface EnemyDef {
   moves: EnemyMove[];
 }
 
+export interface EpisodeBriefing {
+  codename: string;
+  intro: string;
+  objective: string;
+  tacticTip: string;
+}
+
 export interface EpisodeDef {
   id: string;
   number: number;
@@ -151,6 +158,7 @@ export interface EpisodeDef {
   subtitle: string;
   waves: string[];
   stemFact: string;
+  briefing?: EpisodeBriefing;
 }
 
 // ---------------------------------------------------------------- battle state

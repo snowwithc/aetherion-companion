@@ -216,9 +216,7 @@ function BattleInner({ initial }: { initial: BattleState }) {
         {/* CAMERA PREVIEW (when camera mode is active) */}
         {cameraActive ? (
           <section data-testid="battle-camera-section" className="space-y-2">
-            <div className="relative aspect-[16/9] w-full">
-              <CameraPreview detector={camera} showOverlay className="absolute inset-0" testId="battle-camera-preview" />
-            </div>
+            <CameraPreview detector={camera} showOverlay testId="battle-camera-preview" className="max-h-[42vh]" />
             {settings.debugOverlay ? <DebugOverlay detector={camera} /> : null}
           </section>
         ) : null}

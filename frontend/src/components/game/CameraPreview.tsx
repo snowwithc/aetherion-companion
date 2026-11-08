@@ -1,13 +1,17 @@
 /**
- * Camera preview: mounts the detector's video + canvas elements into the DOM and draws an
- * overlay with detected markers, zone polygons and FPS/calibration status.
+ * Camera preview: shows the live rear-camera video with an overlay of
+ *  - every detected marker (corners gold, cards cyan),
+ *  - the printed mat and zones A-D projected back through the homography, so the outlines
+ *    follow the real sheet even when the phone is tilted.
  */
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
-import type { LiveCameraDetector } from '@/detection/LiveCameraDetector';
-import type { ArucoMarker } from '@/detection/vision/aruco';
-import { ZONES } from '@/engine';
+import type { LiveCameraDetector, CameraTelemetry } from '@/detection/LiveCameraDetector';
+import { applyHomography, type Pt } from '@/detection/vision/homography';
+import { CORNER_IDS, MAT, MAT_ZONES, rectCenter, rectCorners, zoneRect } from '@/detection/vision/matLayout';
 import { useCameraTelemetry } from '@/detection/useCameraTelemetry';
+import { cardName } from '@/engine';
 import { cn } from '@/lib/utils';
+import { t } from '@/i18n/id';
 
 interface Props {
   detector: LiveCameraDetector;
@@ -16,133 +20,157 @@ interface Props {
   testId?: string;
 }
 
+const CORNER_ID_SET = new Set<number>(Object.values(CORNER_IDS));
+const GOLD = 'rgba(245, 184, 46, 0.95)';
+const CYAN = 'rgba(94, 200, 229, 0.95)';
+const AMBER = 'rgba(245, 158, 11, 0.95)';
+
+export function calibrationLabel(tel: CameraTelemetry): string {
+  if (!tel.running) return t.camera.status.off;
+  const state = tel.lastFrame?.calibration ?? 'none';
+  return t.camera.status[state];
+}
+
+function drawOverlay(canvas: HTMLCanvasElement, box: DOMRect, tel: CameraTelemetry) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = Math.max(1, Math.round(box.width * dpr));
+  const H = Math.max(1, Math.round(box.height * dpr));
+  if (canvas.width !== W || canvas.height !== H) {
+    canvas.width = W;
+    canvas.height = H;
+  }
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  ctx.clearRect(0, 0, W, H);
+  const frame = tel.lastFrame;
+  if (!frame || !tel.frameWidth || !tel.frameHeight) return;
+
+  // The video uses object-contain: frame coordinates -> box pixels.
+  const s = Math.min(W / tel.frameWidth, H / tel.frameHeight);
+  const ox = (W - tel.frameWidth * s) / 2;
+  const oy = (H - tel.frameHeight * s) / 2;
+  const toBox = (p: Pt) => ({ x: ox + p.x * s, y: oy + p.y * s });
+  const font = (px: number, weight = 700) => `${weight} ${Math.round(px * dpr)}px Manrope, sans-serif`;
+
+  const polygon = (pts: Pt[]) => {
+    ctx.beginPath();
+    pts.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+    ctx.closePath();
+  };
+
+  // Mat + zones through the homography.
+  const inv = frame.paperToCamera;
+  if (inv) {
+    const held = frame.calibration === 'held' || frame.calibration === 'partial';
+    const project = (p: Pt) => toBox(applyHomography(inv, p));
+    const paper = [{ x: 0, y: 0 }, { x: MAT.paper.width, y: 0 }, { x: MAT.paper.width, y: MAT.paper.height }, { x: 0, y: MAT.paper.height }].map(project);
+    ctx.setLineDash([8 * dpr, 6 * dpr]);
+    ctx.lineWidth = 2 * dpr;
+    ctx.strokeStyle = held ? AMBER : 'rgba(94, 200, 229, 0.6)';
+    polygon(paper);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    for (const z of MAT_ZONES) {
+      const quad = rectCorners(zoneRect(z)).map(project);
+      const reading = frame.readings[z];
+      polygon(quad);
+      if (reading.cardId) {
+        ctx.fillStyle = 'rgba(94, 200, 229, 0.18)';
+        ctx.fill();
+      }
+      ctx.lineWidth = (reading.cardId ? 2.5 : 1.5) * dpr;
+      ctx.strokeStyle = reading.cardId ? CYAN : 'rgba(233, 238, 252, 0.55)';
+      ctx.stroke();
+      const c = project(rectCenter(zoneRect(z)));
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = font(18, 800);
+      ctx.fillStyle = 'rgba(11, 19, 36, 0.7)';
+      ctx.fillText(z, c.x + dpr, c.y + dpr);
+      ctx.fillStyle = reading.cardId ? CYAN : 'rgba(233, 238, 252, 0.85)';
+      ctx.fillText(z, c.x, c.y);
+      if (reading.cardId) {
+        const label = cardName(reading.cardId);
+        ctx.font = font(11, 700);
+        const tw = ctx.measureText(label).width + 10 * dpr;
+        ctx.fillStyle = 'rgba(11, 19, 36, 0.8)';
+        ctx.fillRect(c.x - tw / 2, c.y + 12 * dpr, tw, 16 * dpr);
+        ctx.fillStyle = '#E9EEFC';
+        ctx.fillText(label, c.x, c.y + 20 * dpr);
+      }
+    }
+  }
+
+  // Raw markers.
+  for (const m of frame.markers) {
+    const isCorner = CORNER_ID_SET.has(m.id);
+    ctx.strokeStyle = isCorner ? GOLD : CYAN;
+    ctx.lineWidth = 2 * dpr;
+    polygon(m.corners.map(toBox));
+    ctx.stroke();
+    const c = toBox(m.center);
+    ctx.fillStyle = isCorner ? GOLD : CYAN;
+    ctx.fillRect(c.x - 14 * dpr, c.y - 8 * dpr, 28 * dpr, 16 * dpr);
+    ctx.fillStyle = '#0b1324';
+    ctx.font = font(10, 800);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(m.id), c.x, c.y);
+  }
+}
+
 export function CameraPreview({ detector, showOverlay = true, className, testId }: Props) {
+  const hostRef = useRef<HTMLDivElement>(null);
   const videoHostRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
   const tel = useCameraTelemetry(detector);
 
-  // Mount the detector's <video> element into our container (it drives the stream).
+  // Borrow the detector's <video> while mounted; it goes back to its hidden parking spot after.
   useLayoutEffect(() => {
     const host = videoHostRef.current;
     const video = tel.video;
-    if (!host || !video) return;
-    host.innerHTML = '';
-    video.className = 'h-full w-full object-cover';
-    video.setAttribute('playsinline', 'true');
-    host.appendChild(video);
-    return () => {
-      if (video.parentNode === host) host.removeChild(video);
-    };
-  }, [tel.video]);
+    if (!host || !video) return undefined;
+    video.className = 'h-full w-full object-contain';
+    return detector.attachVideo(host);
+  }, [tel.video, detector]);
 
-  // Draw overlay each time the telemetry updates.
   useEffect(() => {
-    const overlay = overlayRef.current;
-    const host = videoHostRef.current;
-    const video = tel.video;
-    const canvas = tel.canvas;
-    if (!overlay || !host || !video || !canvas) return;
-    const rect = host.getBoundingClientRect();
-    if (overlay.width !== rect.width || overlay.height !== rect.height) {
-      overlay.width = Math.max(1, Math.round(rect.width));
-      overlay.height = Math.max(1, Math.round(rect.height));
+    const canvas = overlayRef.current;
+    const host = hostRef.current;
+    if (!canvas || !host) return;
+    if (!showOverlay) {
+      canvas.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height);
+      return;
     }
-    const ctx = overlay.getContext('2d');
-    if (!ctx) return;
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
-    if (!showOverlay) return;
-
-    // Camera-space coords are canvas.width x canvas.height. Overlay scales them.
-    const sx = overlay.width / canvas.width;
-    const sy = overlay.height / canvas.height;
-
-    const markers = tel.lastFrame?.markers ?? [];
-    const cornerIds = tel.lastFrame?.corners ? new Set(Object.values(tel.lastFrame.corners).filter(Boolean).map((m) => (m as ArucoMarker).id)) : new Set<number>();
-
-    // Draw each marker polygon + ID label.
-    for (const m of markers) {
-      const isCorner = cornerIds.has(m.id);
-      ctx.strokeStyle = isCorner ? 'rgba(245, 184, 46, 0.95)' : 'rgba(94, 200, 229, 0.95)';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      m.corners.forEach((c, i) => {
-        const x = c.x * sx;
-        const y = c.y * sy;
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      });
-      ctx.closePath();
-      ctx.stroke();
-      ctx.fillStyle = isCorner ? 'rgba(245, 184, 46, 0.9)' : 'rgba(94, 200, 229, 0.9)';
-      const cx = m.center.x * sx;
-      const cy = m.center.y * sy;
-      ctx.fillRect(cx - 12, cy - 8, 24, 16);
-      ctx.fillStyle = '#0b1324';
-      ctx.font = 'bold 11px monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(String(m.id), cx, cy);
-    }
-
-    // Draw calibrated mat polygon + zone splits.
-    const corners = tel.lastFrame?.corners;
-    if (tel.calibrated && corners && corners.topLeft && corners.topRight && corners.bottomRight && corners.bottomLeft) {
-      const TL = corners.topLeft.center;
-      const TR = corners.topRight.center;
-      const BR = corners.bottomRight.center;
-      const BL = corners.bottomLeft.center;
-      ctx.strokeStyle = 'rgba(94, 200, 229, 0.9)';
-      ctx.setLineDash([6, 4]);
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(TL.x * sx, TL.y * sy);
-      ctx.lineTo(TR.x * sx, TR.y * sy);
-      ctx.lineTo(BR.x * sx, BR.y * sy);
-      ctx.lineTo(BL.x * sx, BL.y * sy);
-      ctx.closePath();
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      // Zone split markers along the top/bottom edges at u = 0.25, 0.5, 0.75.
-      for (let i = 1; i <= 3; i++) {
-        const u = i / 4;
-        const x1 = TL.x + u * (TR.x - TL.x);
-        const y1 = TL.y + u * (TR.y - TL.y);
-        const x2 = BL.x + u * (BR.x - BL.x);
-        const y2 = BL.y + u * (BR.y - BL.y);
-        ctx.strokeStyle = 'rgba(94, 200, 229, 0.5)';
-        ctx.setLineDash([3, 3]);
-        ctx.beginPath();
-        ctx.moveTo(x1 * sx, y1 * sy);
-        ctx.lineTo(x2 * sx, y2 * sy);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-      // Zone labels.
-      ZONES.forEach((z, i) => {
-        const u = (i + 0.5) / 4;
-        const cxTop = TL.x + u * (TR.x - TL.x);
-        const cyTop = TL.y + u * (TR.y - TL.y);
-        ctx.fillStyle = 'rgba(94, 200, 229, 0.85)';
-        ctx.font = 'bold 14px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillText(z, cxTop * sx, cyTop * sy - 20);
-      });
-    }
+    drawOverlay(canvas, host.getBoundingClientRect(), tel);
   }, [tel, showOverlay]);
 
+  const aspect = tel.frameWidth && tel.frameHeight ? `${tel.frameWidth} / ${tel.frameHeight}` : '4 / 3';
+  const state = tel.lastFrame?.calibration ?? 'none';
+
   return (
-    <div className={cn('relative overflow-hidden rounded-2xl border border-[hsl(var(--border-c))] bg-black', className)} data-testid={testId}>
+    <div
+      ref={hostRef}
+      className={cn('relative mx-auto w-full max-h-[62vh] overflow-hidden rounded-2xl border border-[hsl(var(--border-c))] bg-black', className)}
+      style={{ aspectRatio: aspect }}
+      data-testid={testId}
+    >
       <div ref={videoHostRef} className="absolute inset-0" />
-      <canvas ref={overlayRef} className="absolute inset-0 h-full w-full pointer-events-none" />
-      {/* Status pill */}
-      <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-[11px] font-mono-ui text-white" data-testid="camera-status-pill">
-        <span className={cn('inline-block h-2 w-2 rounded-full', tel.calibrated ? 'bg-[hsl(var(--success))]' : tel.running ? 'bg-[hsl(var(--warning))]' : 'bg-[hsl(var(--danger))]')} />
-        {tel.calibrated ? 'KAL' : tel.running ? 'CARI' : 'OFF'} · {tel.markerCount} mk · {tel.fps} fps
+      <canvas ref={overlayRef} className="pointer-events-none absolute inset-0 h-full w-full" />
+      <div className="absolute left-2 top-2 flex items-center gap-1.5 rounded-full bg-black/65 px-2.5 py-1 font-mono-ui text-[11px] text-white" data-testid="camera-status-pill">
+        <span
+          className={cn(
+            'inline-block h-2 w-2 rounded-full',
+            !tel.running ? 'bg-[hsl(var(--danger))]' : state === 'ok' ? 'bg-[hsl(var(--success))]' : state === 'none' ? 'bg-[hsl(var(--danger))]' : 'bg-[hsl(var(--warning))]',
+          )}
+        />
+        <span data-testid="camera-calibration-state">{calibrationLabel(tel)}</span>
+        <span className="text-white/60">- {tel.markerCount} mk - {tel.fps} fps</span>
       </div>
       {!tel.running ? (
         <div className="absolute inset-0 flex items-center justify-center bg-[hsl(var(--bg-0)/0.85)] p-4 text-center text-sm text-[hsl(var(--text-dim))]" data-testid="camera-preview-offline">
-          {tel.lastError ?? 'Menunggu kamera...'}
+          {tel.lastError ?? t.camera.waiting}
         </div>
       ) : null}
     </div>

@@ -40,6 +40,14 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.classList.toggle('low-graphics', settings.lowGraphics);
   }, [settings.lowGraphics]);
 
+  // Camera tuning + debug view follow the Settings screen.
+  useEffect(() => {
+    cameraRef.current.setTuning({ registerFrames: settings.registerFrames, clearFrames: settings.clearFrames });
+  }, [settings.registerFrames, settings.clearFrames]);
+  useEffect(() => {
+    cameraRef.current.setDebug(settings.debugOverlay);
+  }, [settings.debugOverlay]);
+
   // Start / stop the live camera when the detection mode changes.
   useEffect(() => {
     let cancelled = false;

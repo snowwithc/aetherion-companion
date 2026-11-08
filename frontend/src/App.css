@@ -137,3 +137,86 @@
 /* Safe areas */
 .safe-top { padding-top: max(env(safe-area-inset-top), 0px); }
 .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+
+/* ------------------------------------------------------------ Mission Briefings (sci-fi transmission) */
+@keyframes aeth-scan {
+  0% { transform: translateY(-8%); }
+  100% { transform: translateY(108%); }
+}
+@keyframes aeth-caret { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+@keyframes aeth-boot { 0% { clip-path: inset(0 100% 0 0); } 100% { clip-path: inset(0 0 0 0); } }
+@keyframes aeth-signal { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.4); } }
+@keyframes aeth-noise {
+  0% { background-position: 0 0; }
+  100% { background-position: 140px 140px; }
+}
+
+.briefing-crt {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.briefing-crt::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    hsla(188, 92%, 52%, 0.045) 0px,
+    hsla(188, 92%, 52%, 0.045) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  mix-blend-mode: screen;
+  z-index: 2;
+}
+.briefing-crt::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; height: 120px;
+  background: linear-gradient(to bottom, transparent, hsla(188, 92%, 68%, 0.15), transparent);
+  animation: aeth-scan 6.4s linear infinite;
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: screen;
+}
+.low-graphics .briefing-crt::after,
+.low-graphics .briefing-crt::before { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .briefing-crt::after { animation: none; display: none; }
+}
+
+.briefing-caret { animation: aeth-caret 0.9s steps(1) infinite; }
+.briefing-boot { animation: aeth-boot 650ms cubic-bezier(.2,.8,.2,1) both; }
+.briefing-signal { animation: aeth-signal 1.1s ease-in-out infinite; }
+.low-graphics .briefing-signal, .low-graphics .briefing-boot, .low-graphics .briefing-caret { animation: none !important; }
+
+.briefing-ep-glyph {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-shadow:
+    0 0 24px hsla(188, 92%, 52%, 0.55),
+    0 0 2px hsla(188, 92%, 80%, 0.8);
+}
+.briefing-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--border-c));
+  background: hsl(var(--panel-2));
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: hsl(var(--text-dim));
+}
+.briefing-chip .dot {
+  width: 6px; height: 6px; border-radius: 999px;
+  background: hsl(var(--aether-cyan));
+  box-shadow: 0 0 8px hsl(var(--aether-cyan));
+}
+

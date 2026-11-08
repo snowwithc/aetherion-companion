@@ -23,27 +23,35 @@
     "maxLogEntries": 200
   },
   "detection": {
-    "_comment": "Used by the live camera layer (Phase 2). The Settings screen can override the thresholds.",
+    "_comment": "Live camera layer. Marker IDs live in markers.json. fps = frames analysed per second; registerFrames/clearFrames = how many identical frames before a card counts as placed/removed; geometryHoldMs = how long the last good table calibration is kept when a hand covers a corner marker.",
     "fps": 10,
     "confidenceThreshold": 0.7,
     "registerFrames": 6,
     "clearFrames": 10,
     "geometryHoldMs": 2000,
-    "modelUrl": "/models/aetherion_cls.onnx",
-    "labelsUrl": "/models/labels.json",
-    "inputSize": 224,
-    "markers": {
-      "dictionary": "ARUCO_4X4",
-      "corners": { "topLeft": 0, "topRight": 1, "bottomRight": 2, "bottomLeft": 3 },
-      "zones": { "A": [10, 11], "B": [12, 13], "C": [14, 15], "D": [16, 17] }
+    "processMaxSide": 960,
+    "minMarkerSidePx": 14,
+    "topDownPxPerMm": 1,
+    "debugWarpEveryFrames": 2
+  },
+  "mat": {
+    "_comment": "The printed calibration sheet, in millimetres on an A4 landscape page (origin = top-left of the paper). The PDF printout AND the camera zone lookup both read this block, so they always match. Corner positions are marker CENTRES.",
+    "paper": { "width": 297, "height": 210 },
+    "cornerMarkerSize": 24,
+    "cornerCenters": {
+      "topLeft": { "x": 22, "y": 40 },
+      "topRight": { "x": 275, "y": 40 },
+      "bottomRight": { "x": 275, "y": 172 },
+      "bottomLeft": { "x": 22, "y": 172 }
     },
-    "zoneHeightFraction": 0.22,
-    "fallbackLayout": {
-      "_comment": "Fractions of the warped top-down mat (x, y, w, h), used when zone markers were never found.",
-      "A": { "x": 0.04, "y": 0.06, "w": 0.2, "h": 0.5 },
-      "B": { "x": 0.28, "y": 0.06, "w": 0.2, "h": 0.5 },
-      "C": { "x": 0.52, "y": 0.06, "w": 0.2, "h": 0.5 },
-      "D": { "x": 0.76, "y": 0.06, "w": 0.2, "h": 0.5 }
-    }
+    "zones": {
+      "A": { "x": 10.5, "y": 60.5, "w": 66, "h": 91 },
+      "B": { "x": 80.5, "y": 60.5, "w": 66, "h": 91 },
+      "C": { "x": 150.5, "y": 60.5, "w": 66, "h": 91 },
+      "D": { "x": 220.5, "y": 60.5, "w": 66, "h": 91 }
+    },
+    "zoneTolerance": 8,
+    "cardSize": { "w": 63, "h": 88 },
+    "cardMarkerSize": 20
   }
 }

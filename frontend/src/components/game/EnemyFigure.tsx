@@ -4,7 +4,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { motion, useAnimationControls } from 'framer-motion';
-import { assetExists } from '@/detection/LiveCameraDetector';
+import { assetExists } from '@/lib/assetExists';
 import { cn } from '@/lib/utils';
 import { enemyArt } from './assets';
 import { EnemyArtSvg } from './EnemyArt';
