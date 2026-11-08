@@ -24,7 +24,7 @@ export const DEFAULT_SETTINGS: Settings = {
   confidenceThreshold: config.detection.confidenceThreshold,
   registerFrames: config.detection.registerFrames,
   clearFrames: config.detection.clearFrames,
-  debugOverlay: false,
+  debugOverlay: true,
   lowGraphics: false,
   language: 'id',
 };

@@ -1,46 +1,50 @@
 [
   {
-    "content": "Create i18n Bahasa Indonesia strings module (central dictionary)",
+    "content": "Install js-aruco + onnxruntime-web deps",
     "status": "completed"
   },
   {
-    "content": "Build Title screen (new game / continue / settings / library)",
+    "content": "Create markers.json (corners 0-3, cards 100-134)",
     "status": "completed"
   },
   {
-    "content": "Build Campaign Map (3 episodes with lock states)",
+    "content": "Build vision/aruco.ts marker detection wrapper",
     "status": "completed"
   },
   {
-    "content": "Build Setup/Calibration screen (Manual mode card tray + zone preview)",
+    "content": "Build vision/pipeline.ts (frame loop + debounce + zone mapping)",
     "status": "completed"
   },
   {
-    "content": "Build Battle screen using useBattleController",
+    "content": "Rewrite LiveCameraDetector with real camera + pipeline",
     "status": "completed"
   },
   {
-    "content": "Build Results screens (wave cleared, episode victory, defeat)",
+    "content": "Build CameraPreview + DebugOverlay components",
     "status": "completed"
   },
   {
-    "content": "Build Card Library with fusion matrix",
+    "content": "Wire GameProvider to swap detector per settings.detectionMode",
     "status": "completed"
   },
   {
-    "content": "Build Settings screen (reset progress, low graphics, debug)",
+    "content": "Update Setup.tsx camera branch (preview + calibration status)",
     "status": "completed"
   },
   {
-    "content": "Wire App.tsx routing + index.js GameProvider",
+    "content": "Update Settings.tsx to enable camera mode (remove disabled)",
     "status": "completed"
   },
   {
-    "content": "Verify esbuild + supervisorctl + screenshot",
+    "content": "Add i18n strings for camera/calibration/debug",
     "status": "completed"
   },
   {
-    "content": "Run automated frontend playtest",
+    "content": "Build verify + screenshot QA",
+    "status": "completed"
+  },
+  {
+    "content": "Run automated regression playtest (Phase 1 manual still works, Phase 2 camera UI graceful)",
     "status": "completed"
   }
 ]

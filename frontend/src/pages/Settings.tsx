@@ -63,14 +63,13 @@ export default function SettingsPage() {
             />
             <ModeButton
               active={settings.detectionMode === 'camera'}
-              disabled
-              onClick={() => toast.info(t.common.phase2)}
+              onClick={() => updateSettings({ detectionMode: 'camera' })}
               icon={<Camera className="h-4 w-4" />}
-              label={`${t.common.camera} (${t.common.comingSoon})`}
+              label={t.common.camera}
               testId="settings-detection-mode-camera"
             />
           </div>
-          <p className="mt-2 text-xs text-[hsl(var(--text-dim))]">{t.common.phase2}</p>
+          <p className="mt-2 text-xs text-[hsl(var(--text-dim))]">{t.common.phase2Ready}</p>
           <div className="mt-3">
             <RowToggle
               icon={<AlertTriangle className="h-4 w-4" />}

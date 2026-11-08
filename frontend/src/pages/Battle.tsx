@@ -33,6 +33,8 @@ import { Die } from '@/components/game/Die';
 import { useGame } from '@/store/GameProvider';
 import { useBattleController } from '@/hooks/useBattleController';
 import { useZoneEvents, useZoneSnapshot } from '@/detection/hooks';
+import { CameraPreview } from '@/components/game/CameraPreview';
+import { DebugOverlay } from '@/components/game/DebugOverlay';
 import { cn } from '@/lib/utils';
 import { t } from '@/i18n/id';
 import type { CardType } from '@/engine';
@@ -78,7 +80,7 @@ export default function BattlePage() {
 
 function BattleInner({ initial }: { initial: BattleState }) {
   const navigate = useNavigate();
-  const { progress, updateProgress, manual, detector } = useGame();
+  const { progress, updateProgress, manual, detector, camera, cameraActive, settings } = useGame();
   const [trayOpen, setTrayOpen] = useState(false);
 
   const onEnd = React.useCallback((state: BattleState) => {
@@ -210,6 +212,16 @@ function BattleInner({ initial }: { initial: BattleState }) {
             <EmptyBadge label={t.battle.noFusion} />
           )}
         </section>
+
+        {/* CAMERA PREVIEW (when camera mode is active) */}
+        {cameraActive ? (
+          <section data-testid="battle-camera-section" className="space-y-2">
+            <div className="relative aspect-[16/9] w-full">
+              <CameraPreview detector={camera} showOverlay className="absolute inset-0" testId="battle-camera-preview" />
+            </div>
+            {settings.debugOverlay ? <DebugOverlay detector={camera} /> : null}
+          </section>
+        ) : null}
 
         {/* ZONE STRIP */}
         <section data-testid="battle-zone-strip-section">

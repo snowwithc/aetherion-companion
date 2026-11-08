@@ -7,7 +7,7 @@
  */
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle2, Info, ScanLine, Shuffle, Swords } from 'lucide-react';
+import { Camera, CheckCircle2, HandMetal, Info, ScanLine, Shuffle, Swords } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { createBattle, characters, elements, getCharacter, getEnemy, getEpisode } from '@/engine';
 import { useGame } from '@/store/GameProvider';
@@ -15,6 +15,8 @@ import { useZoneSnapshot } from '@/detection/hooks';
 import { Screen, GameButton, DidYouKnow } from '@/components/game/Screen';
 import { MatPreview } from '@/components/game/MatPreview';
 import { CardFace } from '@/components/game/CardFace';
+import { CameraPreview } from '@/components/game/CameraPreview';
+import { DebugOverlay } from '@/components/game/DebugOverlay';
 import { EnemyFigure } from '@/components/game/EnemyFigure';
 import { ELEMENT_ICON } from '@/components/game/icons';
 import { cn } from '@/lib/utils';
@@ -23,8 +25,8 @@ import { t } from '@/i18n/id';
 
 export default function SetupPage() {
   const navigate = useNavigate();
-  const { progress, updateProgress, manual } = useGame();
-  const snapshot = useZoneSnapshot(manual);
+  const { progress, updateProgress, manual, camera, cameraActive, settings, updateSettings } = useGame();
+  const snapshot = useZoneSnapshot(cameraActive ? camera : manual);
   const run = progress.run;
 
   const selectedId = snapshot.A.cardId ?? run?.characterId ?? null;
@@ -38,13 +40,14 @@ export default function SetupPage() {
     }
   }, [run, navigate]);
 
-  // If the run already has a character but Zone A is empty, pre-populate the mat.
+  // If the run already has a character but Zone A is empty, pre-populate the mat
+  // (only when we're in Manual mode - the camera should see the real card instead).
   useEffect(() => {
-    if (run?.characterId && !snapshot.A.cardId) {
+    if (!cameraActive && run?.characterId && !snapshot.A.cardId) {
       manual.place(run.characterId, 'A');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [run?.characterId]);
+  }, [run?.characterId, cameraActive]);
 
   if (!run) return null;
 
@@ -93,6 +96,42 @@ export default function SetupPage() {
           <EnemyFigure enemyId={enemy.id} color={enemy.color} boss={enemy.boss} className="!h-[90px] !w-[90px] sm:!h-[120px] sm:!w-[120px]" testId="setup-enemy-art" />
         </div>
 
+        {/* Detection mode switch */}
+        <div className="panel p-3 sm:p-4" data-testid="setup-detection-mode">
+          <div className="mb-2 flex items-center justify-between">
+            <div>
+              <div className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[hsl(var(--aether-cyan))]">{t.setup.detectionMode}</div>
+              <p className="text-xs text-[hsl(var(--text-dim))]">{cameraActive ? t.setup.cameraHint : t.setup.manualHint}</p>
+            </div>
+            <div className="flex overflow-hidden rounded-xl border border-[hsl(var(--border-c))] bg-[hsl(var(--panel))] text-xs font-bold">
+              <button
+                type="button"
+                onClick={() => updateSettings({ detectionMode: 'manual' })}
+                className={cn('flex items-center gap-1 px-3 py-2', !cameraActive ? 'bg-[hsl(var(--aether-cyan))] text-[hsl(222_45%_8%)]' : 'text-[hsl(var(--text-dim))]')}
+                data-testid="setup-mode-manual-button"
+              >
+                <HandMetal className="h-3.5 w-3.5" /> Manual
+              </button>
+              <button
+                type="button"
+                onClick={() => updateSettings({ detectionMode: 'camera' })}
+                className={cn('flex items-center gap-1 px-3 py-2', cameraActive ? 'bg-[hsl(var(--aether-cyan))] text-[hsl(222_45%_8%)]' : 'text-[hsl(var(--text-dim))]')}
+                data-testid="setup-mode-camera-button"
+              >
+                <Camera className="h-3.5 w-3.5" /> Kamera
+              </button>
+            </div>
+          </div>
+          {cameraActive ? (
+            <>
+              <div className="relative aspect-[16/9] w-full">
+                <CameraPreview detector={camera} showOverlay testId="setup-camera-preview" className="absolute inset-0" />
+              </div>
+              {settings.debugOverlay ? <div className="mt-2"><DebugOverlay detector={camera} /></div> : null}
+            </>
+          ) : null}
+        </div>
+
         {/* Mat */}
         <div data-testid="setup-mat">
           <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-[hsl(var(--text-dim))]">
@@ -102,7 +141,8 @@ export default function SetupPage() {
           <MatPreview snapshot={snapshot} highlight={selected ? [] : ['A']} />
         </div>
 
-        {/* Character picker */}
+        {/* Character picker (Manual mode only - in Camera mode the physical card does it) */}
+        {!cameraActive ? (
         <div className="panel p-3 sm:p-4" data-testid="setup-character-picker">
           <div className="mb-3 flex items-center justify-between">
             <div>
@@ -157,6 +197,7 @@ export default function SetupPage() {
             </div>
           ) : null}
         </div>
+        ) : null}
 
         <DidYouKnow text={ep.stemFact} />
 
