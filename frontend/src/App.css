@@ -220,3 +220,73 @@
   box-shadow: 0 0 8px hsl(var(--aether-cyan));
 }
 
+/* ---- boss intro clip ---- */
+@keyframes aeth-clip-sweep {
+  0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  40%  { opacity: 1; }
+  100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
+}
+@keyframes aeth-clip-reticle {
+  0%   { transform: scale(1.8) rotate(0deg); opacity: 0; }
+  40%  { transform: scale(1) rotate(-12deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes aeth-clip-shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-2px, 1px, 0); }
+  40% { transform: translate3d(2px, -1px, 0); }
+  60% { transform: translate3d(-1px, 2px, 0); }
+  80% { transform: translate3d(1px, -2px, 0); }
+}
+@keyframes aeth-clip-boss-in {
+  0%   { transform: translateY(14%) scale(0.86); filter: blur(8px) brightness(0.5); opacity: 0; }
+  55%  { transform: translateY(0%) scale(1.04); filter: blur(0) brightness(1.2); opacity: 1; }
+  100% { transform: translateY(0%) scale(1); filter: blur(0) brightness(1); opacity: 1; }
+}
+@keyframes aeth-clip-aura {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.95; transform: scale(1.08); }
+}
+@keyframes aeth-clip-grid {
+  0%   { background-position: 0 0; opacity: 0.0; }
+  20%  { opacity: 0.5; }
+  100% { background-position: -80px -80px; opacity: 0.3; }
+}
+@keyframes aeth-clip-panel-in {
+  0%   { transform: translateX(-32px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes aeth-clip-panel-in-right {
+  0%   { transform: translateX(32px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+.clip-sweep  { animation: aeth-clip-sweep 1.1s cubic-bezier(.2,.8,.2,1) forwards; }
+.clip-reticle { animation: aeth-clip-reticle 650ms cubic-bezier(.2,.8,.2,1) both; }
+.clip-shake   { animation: aeth-clip-shake 280ms steps(4) 1; }
+.clip-boss-in { animation: aeth-clip-boss-in 900ms cubic-bezier(.2,.8,.2,1) both; }
+.clip-aura    { animation: aeth-clip-aura 1.6s ease-in-out infinite; }
+.clip-grid    {
+  background-image:
+    linear-gradient(hsla(188,80%,60%,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, hsla(188,80%,60%,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+  animation: aeth-clip-grid 2.2s linear forwards;
+}
+.clip-panel-left  { animation: aeth-clip-panel-in 520ms cubic-bezier(.2,.8,.2,1) 450ms both; }
+.clip-panel-right { animation: aeth-clip-panel-in-right 520ms cubic-bezier(.2,.8,.2,1) 600ms both; }
+
+.low-graphics .clip-sweep,
+.low-graphics .clip-reticle,
+.low-graphics .clip-shake,
+.low-graphics .clip-boss-in,
+.low-graphics .clip-aura,
+.low-graphics .clip-grid,
+.low-graphics .clip-panel-left,
+.low-graphics .clip-panel-right { animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .clip-sweep, .clip-reticle, .clip-shake, .clip-boss-in, .clip-aura, .clip-grid,
+  .clip-panel-left, .clip-panel-right { animation: none !important; }
+}
+
+

@@ -12,6 +12,7 @@ import { AlertTriangle, ChevronRight, Loader2, Radio, Rocket, Skull, SkipForward
 import { episodes, getEnemy, getEpisode } from '@/engine';
 import { EnemyFigure } from '@/components/game/EnemyFigure';
 import { GameButton } from '@/components/game/Screen';
+import { BossIntroClip } from '@/components/game/BossIntroClip';
 import { useGame } from '@/store/GameProvider';
 import { t } from '@/i18n/id';
 import { cn } from '@/lib/utils';
@@ -118,12 +119,17 @@ export default function BriefingPage() {
   const [introDone, setIntroDone] = useState(false);
   const [objectiveDone, setObjectiveDone] = useState(false);
 
+  // Short boss hype clip plays over the top of the briefing on first mount.
+  // While the clip is live, we delay the staged reveal so the overlay reads cleanly.
+  const [clipDone, setClipDone] = useState(false);
+
   useEffect(() => {
     if (reduced) {
       setStage(5);
       setHeaderDone(true);
       setIntroDone(true);
       setObjectiveDone(true);
+      setClipDone(true);
     }
   }, [reduced]);
 
@@ -186,6 +192,10 @@ export default function BriefingPage() {
 
   return (
     <div className="aether-bg grain briefing-crt relative min-h-[100dvh] overflow-hidden" data-testid={`briefing-screen-${ep.id}`}>
+      {/* Boss hype clip plays over the briefing on first entry */}
+      {!clipDone && (
+        <BossIntroClip enemyId={bossId} onDone={() => setClipDone(true)} testId={`briefing-boss-clip-${ep.id}`} />
+      )}
       {/* Faint grid + beams for depth */}
       <div
         aria-hidden
@@ -223,12 +233,16 @@ export default function BriefingPage() {
           <div className="min-w-0 flex-1">
             <div className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-[hsl(var(--text-dim))]">{t.briefing.decoded}</div>
             <div className="font-display text-xl font-semibold leading-tight text-[hsl(var(--aether-cyan))] sm:text-2xl">
-              <Typewriter
-                text={t.briefing.transmission}
-                speed={22}
-                onDone={() => setHeaderDone(true)}
-                testId="briefing-transmission-text"
-              />
+              {clipDone ? (
+                <Typewriter
+                  text={t.briefing.transmission}
+                  speed={22}
+                  onDone={() => setHeaderDone(true)}
+                  testId="briefing-transmission-text"
+                />
+              ) : (
+                <span className="opacity-30" data-testid="briefing-transmission-text">{t.briefing.transmission.slice(0, 1)}</span>
+              )}
             </div>
             <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[10.5px] font-mono-ui uppercase tracking-[0.14em] text-[hsl(var(--text-dim))]">
               <span className="briefing-chip" data-testid="briefing-operator"><span className="dot" />{t.briefing.operator}: {t.briefing.operatorName}</span>

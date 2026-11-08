@@ -222,6 +222,16 @@ export const id = {
     boss: 'Bos',
     waveCount: 'gelombang',
     scrolling: 'Menerima paket data...',
+    clip: {
+      acquiring: 'MENGUNCI TARGET',
+      locked: 'TARGET TERKUNCI',
+      threat: 'LEVEL ANCAMAN',
+      hp: 'HP',
+      atk: 'ATK',
+      scan: 'Pindai biometrik',
+      tapToSkip: 'Ketuk untuk lewati',
+      finalBoss: 'BOS AKHIR',
+    },
   },
 };
 

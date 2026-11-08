@@ -1,34 +1,22 @@
 [
   {
-    "content": "Extend campaign.json with briefing fields (codename, briefing narrative, tacticTip) for 3 episodes",
+    "content": "Create BossIntroClip overlay component (2.5s cinematic reveal with boss figure, name, threat stats)",
     "status": "completed"
   },
   {
-    "content": "Extend EpisodeDef type to include optional briefing fields",
+    "content": "Integrate overlay into Briefing.tsx so it plays before briefing finishes revealing (skippable + reduced-motion safe)",
     "status": "completed"
   },
   {
-    "content": "Create /pages/Briefing.tsx with cinematic sci-fi staged animation",
+    "content": "Add Bahasa Indonesia strings for the clip (TARGET TERKUNCI, ANCAMAN, HP, dsb.)",
     "status": "completed"
   },
   {
-    "content": "Add /briefing/:episodeId route in App.tsx",
+    "content": "esbuild compile + screenshot validation (hype clip on ep1)",
     "status": "completed"
   },
   {
-    "content": "Wire CampaignMap Start/Replay → /briefing and Results next episode → /briefing",
-    "status": "completed"
-  },
-  {
-    "content": "Compile check with esbuild + screenshot validation",
-    "status": "completed"
-  },
-  {
-    "content": "Run testing_agent_v3 for frontend verification",
-    "status": "completed"
-  },
-  {
-    "content": "Run deployment_agent to publish",
+    "content": "Run testing_agent_v3 to verify clip + no regression",
     "status": "completed"
   }
 ]
