@@ -1,22 +1,26 @@
 [
   {
-    "content": "Create BossIntroClip overlay component (2.5s cinematic reveal with boss figure, name, threat stats)",
+    "content": "Design VFX kinds (slash/raw/beam/fusion/heal/recharge/poison/burn/shield/stun/weaken/drain/slam/dodge) mapped from engine events + player action kind",
     "status": "completed"
   },
   {
-    "content": "Integrate overlay into Briefing.tsx so it plays before briefing finishes revealing (skippable + reduced-motion safe)",
+    "content": "Create BattleVfxLayer.tsx with pure SVG + Framer Motion animations, accepts figure refs for positioning",
     "status": "completed"
   },
   {
-    "content": "Add Bahasa Indonesia strings for the clip (TARGET TERKUNCI, ANCAMAN, HP, dsb.)",
+    "content": "Wire figure refs in Battle.tsx (player + enemy containers) and overlay layer",
     "status": "completed"
   },
   {
-    "content": "esbuild compile + screenshot validation (hype clip on ep1)",
+    "content": "Extend useBattleController to track lastPlayerKind + lastEnemyIcon and emit a vfx queue",
     "status": "completed"
   },
   {
-    "content": "Run testing_agent_v3 to verify clip + no regression",
+    "content": "Respect prefers-reduced-motion and settings.lowGraphics (collapse to minimal pulse)",
+    "status": "completed"
+  },
+  {
+    "content": "esbuild + screenshot tests on Battle screen, then testing_agent_v3",
     "status": "completed"
   }
 ]

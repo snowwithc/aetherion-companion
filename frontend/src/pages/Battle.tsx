@@ -30,6 +30,7 @@ import { EnemyFigure } from '@/components/game/EnemyFigure';
 import { CardFace } from '@/components/game/CardFace';
 import { CardTray } from '@/components/game/CardTray';
 import { Die } from '@/components/game/Die';
+import { BattleVfxLayer } from '@/components/game/BattleVfxLayer';
 import { useGame } from '@/store/GameProvider';
 import { useBattleController } from '@/hooks/useBattleController';
 import { useZoneEvents, useZoneSnapshot } from '@/detection/hooks';
@@ -124,7 +125,12 @@ function BattleInner({ initial }: { initial: BattleState }) {
     updateProgress((p) => ({ ...p, battle: state }));
   }, [updateProgress]);
 
-  const { state, fx, dice, banner, moment, anim, roll, act, cancelCard, pickDeck, onZoneEvent, dismissMoment } = useBattleController(initial, { onEnd, onSnapshot });
+  const { state, fx, vfx, dice, banner, moment, anim, roll, act, cancelCard, pickDeck, onZoneEvent, dismissMoment } = useBattleController(initial, { onEnd, onSnapshot });
+
+  // Refs for the player/enemy figure containers. Used by the VFX layer to
+  // compute attack projectile / impact positions in viewport coordinates.
+  const playerFigureRef = React.useRef<HTMLDivElement>(null);
+  const enemyFigureRef = React.useRef<HTMLDivElement>(null);
 
   // Wire the manual detector to the controller (any zone event -> engine).
   useZoneEvents(detector, onZoneEvent);
@@ -172,7 +178,7 @@ function BattleInner({ initial }: { initial: BattleState }) {
         {/* ENEMY PANEL */}
         <section className="panel relative overflow-hidden p-3 sm:p-4" data-testid="battle-enemy-panel">
           <div className="flex items-start gap-3">
-            <div className="relative">
+            <div className="relative" ref={enemyFigureRef}>
               <EnemyFigure
                 enemyId={state.enemy.enemyId}
                 color={enemy.color}
@@ -233,7 +239,7 @@ function BattleInner({ initial }: { initial: BattleState }) {
         {/* PLAYER PANEL */}
         <section className="panel relative overflow-hidden p-3 sm:p-4" data-testid="battle-player-panel">
           <div className="flex items-start gap-3">
-            <div className="relative">
+            <div className="relative" ref={playerFigureRef}>
               <CharacterFigure
                 characterId={state.player.characterId}
                 fusionActivationId={state.player.fusion?.activationId ?? null}
@@ -293,6 +299,7 @@ function BattleInner({ initial }: { initial: BattleState }) {
         <BannerOverlay banner={banner} />
         <CardMomentOverlay moment={moment} onDismiss={dismissMoment} />
         <DiceOverlay dice={dice} />
+        <BattleVfxLayer playerRef={playerFigureRef} enemyRef={enemyFigureRef} items={vfx} />
       </div>
 
       <CardTray open={trayOpen} onOpenChange={setTrayOpen} tab={state.phase === 'awaitingCard' ? (state.pending?.deck ? DECK_LABEL[state.pending.deck].type as CardType : 'activation') : undefined} />

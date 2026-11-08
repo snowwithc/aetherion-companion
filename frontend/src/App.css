@@ -289,4 +289,66 @@
   .clip-panel-left, .clip-panel-right { animation: none !important; }
 }
 
+/* ------------------------------------------------------------ Battle 2D attack VFX */
+@keyframes aeth-vfx-impact-ring {
+  0%   { transform: scale(0.2); opacity: 0.0; }
+  25%  { transform: scale(0.6); opacity: 1.0; }
+  100% { transform: scale(1.6); opacity: 0.0; }
+}
+@keyframes aeth-vfx-impact-ring-slow {
+  0%   { transform: scale(0.1); opacity: 0.0; }
+  20%  { transform: scale(0.5); opacity: 0.85; }
+  100% { transform: scale(2.0); opacity: 0.0; }
+}
+@keyframes aeth-vfx-starburst {
+  0%   { transform: scale(0.3) rotate(0deg); opacity: 0; }
+  40%  { transform: scale(1.2) rotate(40deg); opacity: 1; }
+  100% { transform: scale(1.4) rotate(80deg); opacity: 0; }
+}
+@keyframes aeth-vfx-spark-up {
+  0%   { transform: translateY(0) scale(0.9); opacity: 0; }
+  25%  { opacity: 1; }
+  100% { transform: translateY(-70px) scale(0.5); opacity: 0; }
+}
+@keyframes aeth-vfx-spark-down {
+  0%   { transform: translateY(0) scale(0.9); opacity: 0; }
+  25%  { opacity: 1; }
+  100% { transform: translateY(70px) scale(0.5); opacity: 0; }
+}
+@keyframes aeth-vfx-shockwave {
+  0%   { transform: scale(0.1); opacity: 0.0; }
+  20%  { opacity: 0.9; }
+  100% { transform: scale(2.4); opacity: 0.0; }
+}
+@keyframes aeth-vfx-stun-orbit {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes aeth-vfx-fade {
+  0%   { opacity: 0; }
+  25%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes aeth-vfx-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50%      { transform: scale(1.12); opacity: 1; }
+}
+@keyframes aeth-vfx-slash-stroke {
+  0%   { stroke-dashoffset: 300; opacity: 0.0; }
+  20%  { opacity: 1.0; }
+  70%  { opacity: 1.0; }
+  100% { stroke-dashoffset: 0; opacity: 0.0; }
+}
+@keyframes aeth-vfx-swish {
+  0%   { transform: translateX(-30px) rotate(-20deg); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translateX(30px) rotate(20deg); opacity: 0; }
+}
+
+.low-graphics .vfx-full-anim * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; opacity: 0 !important; }
+@media (prefers-reduced-motion: reduce) {
+  .vfx-full-anim * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+
 
