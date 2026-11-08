@@ -1,0 +1,23 @@
+{
+  "_comment": "Campaign: episodes are unlocked in order. waves = enemy ids from enemies.json (the last one is the boss).",
+  "episodes": [
+    {
+      "id": "ep1", "number": 1, "name": "Pollution Rising",
+      "subtitle": "Smog is choking the city skies.",
+      "waves": ["smog_wisp", "oil_slick", "smog_titan"],
+      "stemFact": "Fine smog particles (PM2.5) are about 30 times thinner than a human hair, small enough to slip deep into the lungs."
+    },
+    {
+      "id": "ep2", "number": 2, "name": "Fossil Fuel Fortress",
+      "subtitle": "Storm the stronghold of coal and fumes.",
+      "waves": ["coal_golem", "fume_drone", "furnace_colossus"],
+      "stemFact": "Coal is made from plants that lived around 300 million years ago, buried and squeezed for ages, which is why it is called a fossil fuel."
+    },
+    {
+      "id": "ep3", "number": 3, "name": "The Great Blackout",
+      "subtitle": "Bring the light back to the grid.",
+      "waves": ["blackout_wraith", "grid_parasite", "fossil_king"],
+      "stemFact": "A power grid must balance supply and demand every second. Batteries and pumped hydro store spare clean energy for when it is needed."
+    }
+  ]
+}

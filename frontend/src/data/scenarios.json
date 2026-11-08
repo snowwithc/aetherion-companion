@@ -1,0 +1,78 @@
+{
+  "_comment": "Scenario cards (Zone D). Last config.scenario.rounds rounds. boosted elements deal x boostedMultiplier damage, weakened x weakenedMultiplier. 'rules' are special effects; rules with penalty=true are ignored while Clear Skies is active. Rule types: attackStun, attackDot, turnStartEnergy, fusionAttackBonus, ignoreDefense, fusionDurationBonus, rechargeBonus, fusionHitReduction, noRecharge, fusionCostIncrease.",
+  "scenarios": [
+    {
+      "id": "scen_ocean", "name": "Ocean", "color": "#2F9BE8",
+      "boosted": ["hydro"], "weakened": ["plants"],
+      "text": "Hydro attacks: d6 4-6 Stuns the enemy. Wind attacks summon a Typhoon (5 HP per round for 2 rounds).",
+      "rules": [
+        { "type": "attackStun", "element": "hydro", "min": 4 },
+        { "type": "attackDot", "element": "wind", "status": "typhoon", "value": 5, "turns": 2 }
+      ],
+      "stemFact": "The ocean has soaked up roughly a quarter of the carbon dioxide humans have released, which is slowly making seawater more acidic."
+    },
+    {
+      "id": "scen_desert", "name": "Desert", "color": "#E8A93B",
+      "boosted": ["solar"], "weakened": ["hydro", "plants"],
+      "text": "Hydro loses 5 Energy at the start of each of its turns (evaporation).",
+      "rules": [ { "type": "turnStartEnergy", "element": "hydro", "value": -5, "penalty": true } ],
+      "stemFact": "A desert is any place that gets less than about 250 mm of rain a year, so the largest desert on Earth is actually icy Antarctica."
+    },
+    {
+      "id": "scen_volcanic_field", "name": "Volcanic Field", "color": "#E0522A",
+      "boosted": ["geothermal"], "weakened": ["plants"],
+      "text": "Fire fusion attacks (Raw and Energy) deal +5 damage.",
+      "rules": [ { "type": "fusionAttackBonus", "activation": "act_fire", "value": 5 } ],
+      "stemFact": "Volcanic ash weathers into some of the most fertile soil on Earth because it is rich in minerals such as potassium and phosphorus."
+    },
+    {
+      "id": "scen_rainforest", "name": "Rainforest", "color": "#3FAE54",
+      "boosted": ["plants"], "weakened": ["solar"],
+      "text": "Plants gain +5 Energy at the start of each of their turns.",
+      "rules": [ { "type": "turnStartEnergy", "element": "plants", "value": 5 } ],
+      "stemFact": "Tropical rainforests cover only about 6% of Earth's land, yet they are home to more than half of all known plant and animal species."
+    },
+    {
+      "id": "scen_mountain_peak", "name": "Mountain Peak", "color": "#7FB6E0",
+      "boosted": ["wind"], "weakened": ["hydro"],
+      "text": "Wind attacks ignore 25% of the enemy's Defense.",
+      "rules": [ { "type": "ignoreDefense", "element": "wind", "value": 25 } ],
+      "stemFact": "At the top of Mount Everest the air pressure is only about one third of the pressure at sea level, so each breath holds far less oxygen."
+    },
+    {
+      "id": "scen_arctic_tundra", "name": "Arctic Tundra", "color": "#8FD8F2",
+      "boosted": ["geothermal"], "weakened": ["solar", "hydro"],
+      "text": "Ice fusions last 1 extra round.",
+      "rules": [ { "type": "fusionDurationBonus", "activation": "act_ice", "value": 1 } ],
+      "stemFact": "Arctic permafrost stores roughly twice as much carbon as there is in the whole atmosphere today, so thawing it could speed up warming."
+    },
+    {
+      "id": "scen_monsoon", "name": "Monsoon", "color": "#4A86C8",
+      "boosted": ["hydro", "wind", "plants"], "weakened": ["solar"],
+      "text": "All Recharge actions restore +5 Energy.",
+      "rules": [ { "type": "rechargeBonus", "value": 5 } ],
+      "stemFact": "Monsoons happen because land heats up faster than the sea in summer, which flips the seasonal winds and pulls in moist ocean air."
+    },
+    {
+      "id": "scen_underground_cavern", "name": "Underground Cavern", "color": "#9B6BD6",
+      "boosted": ["geothermal"], "weakened": ["solar", "wind"],
+      "text": "Earth fusions take 10 less damage from the first enemy hit each round (free Fortify).",
+      "rules": [ { "type": "fusionHitReduction", "activation": "act_earth", "value": 10 } ],
+      "stemFact": "Most limestone caves are carved by rainwater that turned slightly acidic by absorbing carbon dioxide, slowly dissolving the rock over thousands of years."
+    },
+    {
+      "id": "scen_solar_eclipse", "name": "Solar Eclipse", "color": "#7A4FD0",
+      "boosted": [], "weakened": ["solar"],
+      "text": "Solar cannot Recharge while this Scenario is active. Other elements are neutral.",
+      "rules": [ { "type": "noRecharge", "element": "solar", "penalty": true } ],
+      "stemFact": "During a total solar eclipse, solar panels in the Moon's shadow produce almost no power, so grid operators plan for the dip in advance."
+    },
+    {
+      "id": "scen_drought", "name": "Drought", "color": "#D9913A",
+      "boosted": ["solar", "geothermal"], "weakened": ["plants", "hydro"],
+      "text": "Water fusion actions (Raw and Energy Attack) cost +5 Energy.",
+      "rules": [ { "type": "fusionCostIncrease", "activation": "act_water", "value": 5, "penalty": true } ],
+      "stemFact": "In a drought, plants close the tiny pores on their leaves (stomata) to save water, which also cuts how much carbon dioxide they can absorb."
+    }
+  ]
+}

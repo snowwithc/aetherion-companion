@@ -1,0 +1,46 @@
+[
+  {
+    "content": "Create i18n Bahasa Indonesia strings module (central dictionary)",
+    "status": "completed"
+  },
+  {
+    "content": "Build Title screen (new game / continue / settings / library)",
+    "status": "completed"
+  },
+  {
+    "content": "Build Campaign Map (3 episodes with lock states)",
+    "status": "completed"
+  },
+  {
+    "content": "Build Setup/Calibration screen (Manual mode card tray + zone preview)",
+    "status": "completed"
+  },
+  {
+    "content": "Build Battle screen using useBattleController",
+    "status": "completed"
+  },
+  {
+    "content": "Build Results screens (wave cleared, episode victory, defeat)",
+    "status": "completed"
+  },
+  {
+    "content": "Build Card Library with fusion matrix",
+    "status": "completed"
+  },
+  {
+    "content": "Build Settings screen (reset progress, low graphics, debug)",
+    "status": "completed"
+  },
+  {
+    "content": "Wire App.tsx routing + index.js GameProvider",
+    "status": "completed"
+  },
+  {
+    "content": "Verify esbuild + supervisorctl + screenshot",
+    "status": "completed"
+  },
+  {
+    "content": "Run automated frontend playtest",
+    "status": "completed"
+  }
+]

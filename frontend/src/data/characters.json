@@ -1,0 +1,92 @@
+{
+  "_comment": "Character cards (Zone A). defense is a fraction (0.10 = 10%). recharge = Energy restored by the Recharge action.",
+  "characters": [
+    {
+      "id": "char_solara",
+      "name": "Solara",
+      "element": "solar",
+      "title": "Herald of the Dawn",
+      "defense": 0.1,
+      "recharge": 15,
+      "color": "#F5B82E",
+      "passive": {
+        "id": "daybreak",
+        "name": "Daybreak",
+        "text": "Your first Attack each wave deals 20 damage instead of 15.",
+        "params": { "firstAttackDamage": 20 }
+      },
+      "stemFact": "The sunlight that reaches Earth's surface in about an hour and a half carries more energy than the whole world uses in a year."
+    },
+    {
+      "id": "char_aquor",
+      "name": "Aquor",
+      "element": "hydro",
+      "title": "Keeper of the Tides",
+      "defense": 0.15,
+      "recharge": 15,
+      "color": "#2F7BEA",
+      "passive": {
+        "id": "tidalFlow",
+        "name": "Tidal Flow",
+        "text": "Every Recharge restores +5 extra Energy.",
+        "params": { "extraEnergy": 5 }
+      },
+      "stemFact": "Hydropower turns the energy of falling water into electricity, and it is still the world's single largest source of renewable electricity."
+    },
+    {
+      "id": "char_magmaros",
+      "name": "Magmaros",
+      "element": "geothermal",
+      "title": "Heart of the Mantle",
+      "defense": 0.25,
+      "recharge": 10,
+      "color": "#E8542A",
+      "passive": {
+        "id": "coreHeat",
+        "name": "Core Heat",
+        "text": "When hit by an enemy special move, reflect 5 damage back.",
+        "params": { "reflect": 5 }
+      },
+      "stemFact": "Iceland heats about 9 out of 10 homes with geothermal energy, using hot water from deep underground."
+    },
+    {
+      "id": "char_zephyra",
+      "name": "Zephyra",
+      "element": "wind",
+      "title": "Rider of the Gale",
+      "defense": 0.05,
+      "recharge": 15,
+      "color": "#2EC4C9",
+      "passive": {
+        "id": "swiftStep",
+        "name": "Swift Step",
+        "text": "On each enemy attack, roll a d6: on 5-6 you dodge it completely.",
+        "params": { "dodgeMin": 5 }
+      },
+      "stemFact": "A wind turbine's power grows with the cube of the wind speed: double the wind and you get about 8 times the power."
+    },
+    {
+      "id": "char_verdan",
+      "name": "Verdan",
+      "element": "plants",
+      "title": "Warden of the Grove",
+      "defense": 0.15,
+      "recharge": 15,
+      "color": "#5DBB4A",
+      "passive": {
+        "id": "regrowth",
+        "name": "Regrowth",
+        "text": "While below 50 HP, heal 5 HP at the start of each of your turns.",
+        "params": { "belowHp": 50, "heal": 5 }
+      },
+      "stemFact": "Photosynthesis turns sunlight, water and carbon dioxide into sugar and oxygen. Most crops store only about 1-2% of the sunlight that hits them."
+    }
+  ],
+  "elements": {
+    "solar": { "name": "Solar", "color": "#F5B82E" },
+    "hydro": { "name": "Hydro", "color": "#2F7BEA" },
+    "geothermal": { "name": "Geothermal", "color": "#E8542A" },
+    "wind": { "name": "Wind", "color": "#2EC4C9" },
+    "plants": { "name": "Plants", "color": "#5DBB4A" }
+  }
+}

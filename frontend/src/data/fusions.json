@@ -1,0 +1,76 @@
+{
+  "_comment": "Fusion names: activation card x character element. signature=true adds config.fusion.signatureBonus to every numeric effect 'value' of that activation. fusionOverrides is reserved for future per-fusion custom effects, keyed like 'act_fire+solar'. Supported override fields: raw / energy (same shape as activations.json), defenseBonus (fraction, e.g. 0.05), rounds.",
+  "matrix": {
+    "act_fire": {
+      "solar": { "name": "Solar Flare", "signature": true },
+      "hydro": { "name": "Steam", "signature": true },
+      "geothermal": { "name": "Magma Burst" },
+      "wind": { "name": "Firestorm" },
+      "plants": { "name": "Wildfire" }
+    },
+    "act_wind": {
+      "solar": { "name": "Heat Dome" },
+      "hydro": { "name": "Thunderstorm", "signature": true },
+      "geothermal": { "name": "Ash Gale" },
+      "wind": { "name": "Cyclone" },
+      "plants": { "name": "Seed Gale" }
+    },
+    "act_water": {
+      "solar": { "name": "Hydrogen Cell" },
+      "hydro": { "name": "Deep Current" },
+      "geothermal": { "name": "Hot Spring" },
+      "wind": { "name": "Monsoon Front" },
+      "plants": { "name": "Rainforest", "signature": true }
+    },
+    "act_ice": {
+      "solar": { "name": "Diamond Dust" },
+      "hydro": { "name": "Glacier", "signature": true },
+      "geothermal": { "name": "Frozen Geyser" },
+      "wind": { "name": "Blizzard" },
+      "plants": { "name": "Permafrost Thicket" }
+    },
+    "act_lightning": {
+      "solar": { "name": "Photon Surge" },
+      "hydro": { "name": "Electric Tide" },
+      "geothermal": { "name": "Plasma Vent" },
+      "wind": { "name": "Thunder Gale", "signature": true },
+      "plants": { "name": "Bioelectric Surge" }
+    },
+    "act_earth": {
+      "solar": { "name": "Sunbaked Mesa" },
+      "hydro": { "name": "Mudslide" },
+      "geothermal": { "name": "Tectonic Quake", "signature": true },
+      "wind": { "name": "Sandstorm" },
+      "plants": { "name": "Ancient Grove" }
+    },
+    "act_sunlight": {
+      "solar": { "name": "Zenith Radiance" },
+      "hydro": { "name": "Prism Mist" },
+      "geothermal": { "name": "Radiant Core" },
+      "wind": { "name": "Aurora Gale" },
+      "plants": { "name": "Photosynthesis Bloom", "signature": true }
+    },
+    "act_magma": {
+      "solar": { "name": "Molten Sun" },
+      "hydro": { "name": "Obsidian Shell" },
+      "geothermal": { "name": "Eruption", "signature": true },
+      "wind": { "name": "Ash Storm" },
+      "plants": { "name": "Scorched Grove" }
+    },
+    "act_spore": {
+      "solar": { "name": "Lichen Bloom" },
+      "hydro": { "name": "Algae Bloom" },
+      "geothermal": { "name": "Thermophile Colony" },
+      "wind": { "name": "Pollen Storm" },
+      "plants": { "name": "Mycelium Network", "signature": true }
+    },
+    "act_catalyst": {
+      "solar": { "name": "Photovoltaic Grid", "signature": true },
+      "hydro": { "name": "Electrolysis Cell" },
+      "geothermal": { "name": "Heat Exchanger" },
+      "wind": { "name": "Turbine Array" },
+      "plants": { "name": "Biofuel Reactor" }
+    }
+  },
+  "fusionOverrides": {}
+}

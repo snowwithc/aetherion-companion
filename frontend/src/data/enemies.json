@@ -1,0 +1,91 @@
+{
+  "_comment": "Enemies. defense is a fraction. moves loop in order; the next move is always telegraphed. kind 'basic' = normal attack, 'special' = everything else (Silence turns the next special into basicAttack). once=true moves are used only once per battle. Effect types: applyStatus (target player/self), heal, drain (heal self on hit). traits.rage: below belowPct of max HP, +bonus damage on all attacks.",
+  "enemies": [
+    {
+      "id": "smog_wisp", "name": "Smog Wisp", "hp": 60, "defense": 0, "basicAttack": 8, "color": "#8C8FA8",
+      "flavor": "A drifting puff of exhaust that dims the sky.",
+      "moves": [
+        { "name": "Attack", "kind": "basic", "damage": 8, "icon": "attack" },
+        { "name": "Attack", "kind": "basic", "damage": 8, "icon": "attack" },
+        { "name": "Smog Cloud", "kind": "special", "icon": "weaken", "text": "Weakens you (-25% damage next turn)", "effects": [ { "type": "applyStatus", "target": "player", "status": "weaken", "turns": 1 } ] }
+      ]
+    },
+    {
+      "id": "oil_slick", "name": "Oil Slick", "hp": 80, "defense": 0.1, "basicAttack": 10, "color": "#3B3550",
+      "flavor": "Spilled crude that smothers everything it touches.",
+      "moves": [
+        { "name": "Attack", "kind": "basic", "damage": 10, "icon": "attack" },
+        { "name": "Slick", "kind": "special", "icon": "poison", "text": "Poison 3 HP for 2 rounds", "effects": [ { "type": "applyStatus", "target": "player", "status": "poison", "value": 3, "turns": 2 } ] },
+        { "name": "Attack", "kind": "basic", "damage": 10, "icon": "attack" }
+      ]
+    },
+    {
+      "id": "smog_titan", "name": "Smog Titan", "hp": 140, "defense": 0.1, "basicAttack": 12, "boss": true, "color": "#6F6A86",
+      "flavor": "A towering storm of soot fed by a thousand chimneys.",
+      "moves": [
+        { "name": "Attack", "kind": "basic", "damage": 12, "icon": "attack" },
+        { "name": "Toxic Haze", "kind": "special", "damage": 8, "icon": "poison", "text": "8 dmg + Poison 3 HP for 2 rounds", "effects": [ { "type": "applyStatus", "target": "player", "status": "poison", "value": 3, "turns": 2 } ] },
+        { "name": "Attack", "kind": "basic", "damage": 12, "icon": "attack" },
+        { "name": "Heal", "kind": "special", "icon": "heal", "text": "Heals 15 HP", "effects": [ { "type": "heal", "value": 15 } ] }
+      ]
+    },
+    {
+      "id": "coal_golem", "name": "Coal Golem", "hp": 90, "defense": 0.2, "basicAttack": 12, "color": "#3A3634",
+      "flavor": "Hewn from a coal seam, still smouldering inside.",
+      "moves": [
+        { "name": "Attack", "kind": "basic", "damage": 12, "icon": "attack" },
+        { "name": "Attack", "kind": "basic", "damage": 12, "icon": "attack" },
+        { "name": "Slam", "kind": "special", "damage": 18, "icon": "slam", "text": "Heavy 18 dmg slam" }
+      ]
+    },
+    {
+      "id": "fume_drone", "name": "Fume Drone", "hp": 70, "defense": 0.05, "basicAttack": 10, "color": "#5E6B78",
+      "flavor": "A buzzing exhaust-powered machine that never stops.",
+      "moves": [
+        { "name": "Attack", "kind": "basic", "damage": 10, "icon": "attack" },
+        { "name": "Attack", "kind": "basic", "damage": 10, "icon": "attack" },
+        { "name": "Shock", "kind": "special", "damage": 10, "icon": "stun", "text": "10 dmg, d6 5-6 Stuns you", "effects": [ { "type": "applyStatus", "target": "player", "status": "stun", "min": 5 } ] }
+      ]
+    },
+    {
+      "id": "furnace_colossus", "name": "Furnace Colossus", "hp": 170, "defense": 0.2, "basicAttack": 14, "boss": true, "color": "#7A3A22",
+      "flavor": "A walking blast furnace that burns fuel day and night.",
+      "moves": [
+        { "name": "Attack", "kind": "basic", "damage": 14, "icon": "attack" },
+        { "name": "Flame Vent", "kind": "special", "damage": 10, "icon": "burn", "text": "10 dmg + Burn 5 HP for 2 rounds", "effects": [ { "type": "applyStatus", "target": "player", "status": "burn", "value": 5, "turns": 2 } ] },
+        { "name": "Attack", "kind": "basic", "damage": 14, "icon": "attack" },
+        { "name": "Armor Up", "kind": "special", "icon": "shield", "text": "+10% Defense for 2 rounds", "effects": [ { "type": "applyStatus", "target": "self", "status": "armorUp", "value": 0.1, "turns": 2 } ] }
+      ]
+    },
+    {
+      "id": "blackout_wraith", "name": "Blackout Wraith", "hp": 90, "defense": 0.1, "basicAttack": 12, "color": "#2B2F4A",
+      "flavor": "A shadow that feeds on wasted electricity.",
+      "moves": [
+        { "name": "Attack", "kind": "basic", "damage": 12, "icon": "attack" },
+        { "name": "Drain", "kind": "special", "damage": 8, "icon": "drain", "text": "8 dmg and heals itself 8 HP", "effects": [ { "type": "drain", "value": 8 } ] },
+        { "name": "Attack", "kind": "basic", "damage": 12, "icon": "attack" }
+      ]
+    },
+    {
+      "id": "grid_parasite", "name": "Grid Parasite", "hp": 100, "defense": 0.15, "basicAttack": 12, "color": "#3C4A3A",
+      "flavor": "It clings to power lines and leeches the grid dry.",
+      "moves": [
+        { "name": "Attack", "kind": "basic", "damage": 12, "icon": "attack" },
+        { "name": "Drain", "kind": "special", "damage": 10, "icon": "drain", "text": "10 dmg and heals itself 10 HP", "effects": [ { "type": "drain", "value": 10 } ] },
+        { "name": "Static Shock", "kind": "special", "damage": 10, "icon": "stun", "text": "10 dmg, d6 4-6 Stuns you", "effects": [ { "type": "applyStatus", "target": "player", "status": "stun", "min": 4 } ] }
+      ]
+    },
+    {
+      "id": "fossil_king", "name": "The Fossil King", "hp": 220, "defense": 0.2, "basicAttack": 15, "boss": true, "finalBoss": true, "color": "#4A3B1E",
+      "flavor": "Crowned in oil and coal, he wants the world to stay dark.",
+      "traits": { "rage": { "belowPct": 0.5, "bonus": 5 } },
+      "moves": [
+        { "name": "Attack", "kind": "basic", "damage": 15, "icon": "attack" },
+        { "name": "Heat Wave", "kind": "special", "damage": 12, "icon": "burn", "text": "12 dmg + Burn 5 HP for 2 rounds", "effects": [ { "type": "applyStatus", "target": "player", "status": "burn", "value": 5, "turns": 2 } ] },
+        { "name": "Attack", "kind": "basic", "damage": 15, "icon": "attack" },
+        { "name": "Dark Tide", "kind": "special", "damage": 15, "icon": "weaken", "text": "15 dmg + Weakens you", "effects": [ { "type": "applyStatus", "target": "player", "status": "weaken", "turns": 1 } ] },
+        { "name": "Heal", "kind": "special", "icon": "heal", "once": true, "text": "Heals 20 HP (only once)", "effects": [ { "type": "heal", "value": 20 } ] }
+      ]
+    }
+  ]
+}

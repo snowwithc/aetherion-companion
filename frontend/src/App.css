@@ -1,0 +1,139 @@
+/* Aetherion Companion - game styles (simple CSS animations, no particle systems). */
+
+.font-display { font-family: 'EB Garamond', Georgia, serif; }
+.font-mono-ui { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Page background: deep navy with a faint circuit grid + grain (kept subtle). */
+.aether-bg {
+  background-color: hsl(var(--bg-0));
+  background-image:
+    radial-gradient(900px circle at 15% -10%, hsla(188, 92%, 52%, 0.10), transparent 55%),
+    radial-gradient(700px circle at 95% 0%, hsla(42, 92%, 56%, 0.06), transparent 60%),
+    linear-gradient(hsla(188, 80%, 60%, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, hsla(188, 80%, 60%, 0.035) 1px, transparent 1px);
+  background-size: auto, auto, 44px 44px, 44px 44px;
+  background-attachment: fixed;
+}
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 1;
+}
+
+.panel {
+  background: hsl(var(--panel));
+  border: 1px solid hsl(var(--border-c));
+  border-radius: 1.25rem;
+}
+.panel-2 {
+  background: hsl(var(--panel-2));
+  border: 1px solid hsl(var(--border-c));
+}
+
+/* Wordmark */
+.wordmark {
+  font-family: 'EB Garamond', Georgia, serif;
+  letter-spacing: 0.18em;
+  color: hsl(var(--aether-silver));
+  text-shadow: 0 0 22px hsla(262, 60%, 75%, 0.45), 0 0 2px hsla(188, 92%, 70%, 0.6);
+}
+
+/* ------------------------------------------------------------ cards */
+.card-face {
+  position: relative;
+  aspect-ratio: 63 / 88;
+  border-radius: 6% / 4.3%;
+  overflow: hidden;
+  background: hsl(var(--panel-2));
+  box-shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.8);
+}
+.card-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.tilt-wrap { perspective: 800px; }
+.tilt-card { transform-style: preserve-3d; transition: transform 200ms ease-out, box-shadow 200ms ease-out; will-change: transform; }
+
+.flip-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 700ms cubic-bezier(.2,.8,.2,1); }
+.flip-inner.is-flipped { transform: rotateY(180deg); }
+.flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flip-back { transform: rotateY(180deg); }
+
+/* ------------------------------------------------------------ animations */
+@keyframes aeth-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes aeth-float { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-9px) rotate(1deg); } }
+@keyframes aeth-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.018); } }
+@keyframes aeth-glow { 0%, 100% { opacity: 0.55; } 50% { opacity: 0.9; } }
+@keyframes aeth-pulse-ring { 0% { box-shadow: 0 0 0 0 hsla(188, 92%, 52%, 0.55); } 100% { box-shadow: 0 0 0 12px hsla(188, 92%, 52%, 0); } }
+@keyframes aeth-spin { to { transform: rotate(360deg); } }
+@keyframes aeth-sway { 0%, 100% { transform: translateX(0) skewX(0); } 50% { transform: translateX(4px) skewX(-2deg); } }
+@keyframes aeth-shimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(220%); } }
+@keyframes aeth-flicker { 0%, 100% { opacity: 1; } 45% { opacity: 0.85; } 50% { opacity: 0.4; } 55% { opacity: 0.9; } }
+
+.anim-bob { animation: aeth-bob 3.2s ease-in-out infinite; }
+.anim-float { animation: aeth-float 4.2s ease-in-out infinite; }
+.anim-breathe { animation: aeth-breathe 3.6s ease-in-out infinite; }
+.anim-glow { animation: aeth-glow 2.8s ease-in-out infinite; }
+.anim-pulse-ring { animation: aeth-pulse-ring 1.4s ease-out infinite; }
+.anim-spin { animation: aeth-spin 0.35s linear infinite; transform-origin: center; transform-box: fill-box; }
+.anim-spin-slow { animation: aeth-spin 18s linear infinite; }
+.anim-sway { animation: aeth-sway 3s ease-in-out infinite; transform-box: fill-box; }
+.anim-flicker { animation: aeth-flicker 2.4s steps(1) infinite; }
+
+.low-graphics .anim-bob,
+.low-graphics .anim-float,
+.low-graphics .anim-breathe,
+.low-graphics .anim-glow,
+.low-graphics .anim-spin-slow,
+.low-graphics .anim-sway,
+.low-graphics .anim-flicker { animation: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-bob, .anim-float, .anim-breathe, .anim-glow, .anim-spin-slow, .anim-sway, .anim-flicker, .anim-pulse-ring { animation: none !important; }
+}
+
+/* Shimmer sweep on bars */
+.bar-shine { position: relative; overflow: hidden; }
+.bar-shine::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; width: 30%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+  animation: aeth-shimmer 3.4s ease-in-out infinite;
+}
+.low-graphics .bar-shine::after { display: none; }
+
+/* ------------------------------------------------------------ 3D die (CSS) */
+.die-scene { perspective: 600px; }
+.die-cube { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
+.die-face {
+  position: absolute; inset: 0;
+  border-radius: 18%;
+  background: linear-gradient(145deg, #f8fbff, #cfd9ea);
+  border: 2px solid rgba(20, 30, 60, 0.25);
+  box-shadow: inset 0 0 12px rgba(30, 40, 80, 0.25);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  padding: 14%;
+  backface-visibility: hidden;
+}
+.die-pip { width: 70%; height: 70%; margin: auto; border-radius: 9999px; background: #13203d; }
+.die-pip.red { background: #d83a2b; }
+
+/* Character portrait mask (hides the empty hexagon slot on the card art) */
+.portrait-mask {
+  -webkit-mask-image: radial-gradient(ellipse 62% 64% at 50% 44%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 62% 64% at 50% 44%, #000 62%, transparent 100%);
+}
+
+/* Scrollbars */
+.thin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: hsl(var(--border-c)); border-radius: 9999px; }
+
+/* Safe areas */
+.safe-top { padding-top: max(env(safe-area-inset-top), 0px); }
+.safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 0px); }

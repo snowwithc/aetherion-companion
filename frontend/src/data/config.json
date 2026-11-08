@@ -1,0 +1,49 @@
+{
+  "_comment": "Global balance numbers. Edit freely - no code changes needed.",
+  "player": { "maxHp": 100, "maxEnergy": 100, "startHp": 100, "startEnergy": 100 },
+  "actions": {
+    "attack": { "cost": 15, "damage": 15 },
+    "actionCard": { "cost": 25 },
+    "rawAttack": { "cost": 20, "damage": 20 },
+    "energyAttack": { "cost": 25, "damage": 25 }
+  },
+  "defenseCap": 0.4,
+  "initiative": { "playerFirstMin": 4 },
+  "fusion": { "rounds": 3, "signatureBonus": 5 },
+  "scenario": { "rounds": 2, "boostedMultiplier": 1.2, "weakenedMultiplier": 0.8 },
+  "boosters": { "maxArmed": 2 },
+  "statuses": { "weakenMultiplier": 0.75, "chillAmount": 5 },
+  "betweenWaves": { "healHp": 25, "restoreEnergy": 50 },
+  "afterEpisode": { "fullHeal": true },
+  "ui": {
+    "enemyTurnDelayMs": 1100,
+    "playerTurnDelayMs": 650,
+    "eventStepMs": 380,
+    "diceRollMs": 1100,
+    "maxLogEntries": 200
+  },
+  "detection": {
+    "_comment": "Used by the live camera layer (Phase 2). The Settings screen can override the thresholds.",
+    "fps": 10,
+    "confidenceThreshold": 0.7,
+    "registerFrames": 6,
+    "clearFrames": 10,
+    "geometryHoldMs": 2000,
+    "modelUrl": "/models/aetherion_cls.onnx",
+    "labelsUrl": "/models/labels.json",
+    "inputSize": 224,
+    "markers": {
+      "dictionary": "ARUCO_4X4",
+      "corners": { "topLeft": 0, "topRight": 1, "bottomRight": 2, "bottomLeft": 3 },
+      "zones": { "A": [10, 11], "B": [12, 13], "C": [14, 15], "D": [16, 17] }
+    },
+    "zoneHeightFraction": 0.22,
+    "fallbackLayout": {
+      "_comment": "Fractions of the warped top-down mat (x, y, w, h), used when zone markers were never found.",
+      "A": { "x": 0.04, "y": 0.06, "w": 0.2, "h": 0.5 },
+      "B": { "x": 0.28, "y": 0.06, "w": 0.2, "h": 0.5 },
+      "C": { "x": 0.52, "y": 0.06, "w": 0.2, "h": 0.5 },
+      "D": { "x": 0.76, "y": 0.06, "w": 0.2, "h": 0.5 }
+    }
+  }
+}

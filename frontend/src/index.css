@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Aetherion design tokens - derived from the card art (navy card back, cyan circuits, element colors). */
+@layer base {
+  :root,
+  .dark {
+    --bg-0: 222 45% 6%;
+    --bg-1: 223 40% 9%;
+    --panel: 223 34% 12%;
+    --panel-2: 223 28% 16%;
+    --text: 210 40% 98%;
+    --text-dim: 215 18% 78%;
+    --muted-c: 223 18% 22%;
+    --border-c: 220 18% 26%;
+
+    --aether-cyan: 188 92% 52%;
+    --aether-silver: 255 18% 78%;
+    --aether-lavender: 262 42% 72%;
+    --aether-gold: 42 92% 56%;
+
+    --el-solar: 42 92% 56%;
+    --el-hydro: 214 92% 60%;
+    --el-geothermal: 14 82% 54%;
+    --el-wind: 186 78% 52%;
+    --el-plants: 112 50% 51%;
+
+    --hp: 142 62% 46%;
+    --hp-low: 6 82% 54%;
+    --energy: 188 92% 52%;
+    --warning: 42 92% 56%;
+    --danger: 6 82% 54%;
+    --success: 142 62% 46%;
+
+    --parchment: 42 55% 88%;
+    --parchment-ink: 222 45% 10%;
+
+    /* shadcn mapping */
+    --background: var(--bg-0);
+    --foreground: var(--text);
+    --card: var(--panel);
+    --card-foreground: var(--text);
+    --popover: var(--panel);
+    --popover-foreground: var(--text);
+    --primary: var(--aether-cyan);
+    --primary-foreground: 222 45% 8%;
+    --secondary: var(--panel-2);
+    --secondary-foreground: var(--text);
+    --muted: var(--muted-c);
+    --muted-foreground: var(--text-dim);
+    --accent: var(--panel-2);
+    --accent-foreground: var(--text);
+    --destructive: var(--danger);
+    --destructive-foreground: 210 40% 98%;
+    --border: var(--border-c);
+    --input: var(--border-c);
+    --ring: var(--aether-cyan);
+    --radius: 0.9rem;
+    --chart-1: 188 92% 52%;
+    --chart-2: 42 92% 56%;
+    --chart-3: 142 62% 46%;
+    --chart-4: 214 92% 60%;
+    --chart-5: 6 82% 54%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html,
+  body {
+    background: hsl(var(--bg-0));
+    color: hsl(var(--text));
+  }
+  body {
+    margin: 0;
+    font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+  ::selection {
+    background: hsl(var(--aether-cyan) / 0.35);
+  }
+}

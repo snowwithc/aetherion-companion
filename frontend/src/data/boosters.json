@@ -1,0 +1,15 @@
+{
+  "_comment": "Booster cards (Zone C). A booster is ARMED when placed and only works on the NEXT turn. timing: 'nextPlayerTurn' (your next action) or 'nextEnemyTurn' (the enemy's next attack). appliesTo = which actions it modifies: attack, raw, energy, recharge, actionCard, turnStart, enemyAttack.",
+  "boosters": [
+    { "id": "boost_double_strike", "name": "Double Strike", "text": "x2 damage on your next Attack.", "timing": "nextPlayerTurn", "appliesTo": ["attack"], "mods": { "damageMultiplier": 2 } },
+    { "id": "boost_armor_breaker", "name": "Armor Breaker", "text": "Halves the enemy's Defense for your next attack.", "timing": "nextPlayerTurn", "appliesTo": ["attack", "raw", "energy"], "mods": { "enemyDefenseMultiplier": 0.5 } },
+    { "id": "boost_overcharge", "name": "Overcharge", "text": "x1.5 Energy from your next Recharge.", "timing": "nextPlayerTurn", "appliesTo": ["recharge"], "mods": { "rechargeMultiplier": 1.5 } },
+    { "id": "boost_power_surge", "name": "Power Surge", "text": "x1.5 damage on your next Raw Attack or Energy Attack.", "timing": "nextPlayerTurn", "appliesTo": ["raw", "energy"], "mods": { "damageMultiplier": 1.5 } },
+    { "id": "boost_energy_siphon", "name": "Energy Siphon", "text": "Your next attack heals you for 50% of the damage dealt.", "timing": "nextPlayerTurn", "appliesTo": ["attack", "raw", "energy"], "mods": { "lifesteal": 0.5 } },
+    { "id": "boost_eco_shield", "name": "Eco Shield", "text": "Halves the damage of the enemy's next attack.", "timing": "nextEnemyTurn", "appliesTo": ["enemyAttack"], "mods": { "incomingMultiplier": 0.5 } },
+    { "id": "boost_efficiency_core", "name": "Efficiency Core", "text": "Your next Action Card costs 15 Energy instead of 25.", "timing": "nextPlayerTurn", "appliesTo": ["actionCard"], "mods": { "actionCardCost": 15 } },
+    { "id": "boost_second_wind", "name": "Second Wind", "text": "Next turn: Recharge restores x2 and heals 10 HP, but you cannot attack that turn.", "timing": "nextPlayerTurn", "appliesTo": ["recharge"], "mods": { "rechargeMultiplier": 2, "rechargeHeal": 10, "disableAttacks": true } },
+    { "id": "boost_glass_cannon", "name": "Glass Cannon", "text": "x3 damage on your next Attack, but you take x1.5 damage from the enemy's next attack.", "timing": "nextPlayerTurn", "appliesTo": ["attack"], "mods": { "damageMultiplier": 3, "selfIncomingMultiplier": 1.5 } },
+    { "id": "boost_clear_skies", "name": "Clear Skies", "text": "Next turn, ignore the active Scenario's penalties on you.", "timing": "nextPlayerTurn", "appliesTo": ["attack", "raw", "energy", "recharge", "actionCard", "turnStart"], "mods": { "ignoreScenarioPenalties": true } }
+  ]
+}

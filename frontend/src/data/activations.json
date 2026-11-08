@@ -1,0 +1,55 @@
+{
+  "_comment": "Activation cards (Zone B). Raw/Energy Attack base damage and costs live in config.json. Any effect with a 'value' gets +signatureBonus on signature fusions. '{value}' in the text is replaced by the (possibly boosted) number.",
+  "activations": [
+    {
+      "id": "act_fire", "name": "Fire", "color": "#F25A1D",
+      "raw": { "text": "20 dmg + Scald {value} HP next round", "effects": [ { "type": "applyStatus", "target": "enemy", "status": "scald", "value": 5, "turns": 1 } ] },
+      "energy": { "text": "25 dmg + Burn {value} HP/round for 2 rounds", "effects": [ { "type": "applyStatus", "target": "enemy", "status": "burn", "value": 5, "turns": 2 } ] }
+    },
+    {
+      "id": "act_wind", "name": "Wind", "color": "#2BC4B4",
+      "raw": { "text": "20 dmg, Silence the enemy's next special move", "effects": [ { "type": "applyStatus", "target": "enemy", "status": "silence" } ] },
+      "energy": { "text": "25 dmg, ignores the active Scenario's modifiers", "effects": [ { "type": "ignoreScenario" } ] }
+    },
+    {
+      "id": "act_water", "name": "Water", "color": "#2F86E8",
+      "raw": { "text": "20 dmg, gain {value} Energy", "effects": [ { "type": "gainEnergy", "value": 5 } ] },
+      "energy": { "text": "25 dmg, restore {value} Energy", "effects": [ { "type": "gainEnergy", "value": 10 } ] }
+    },
+    {
+      "id": "act_ice", "name": "Ice", "color": "#6FD0F5",
+      "raw": { "text": "20 dmg, Chill the enemy (its next attack deals 5 less)", "effects": [ { "type": "applyStatus", "target": "enemy", "status": "chill" } ] },
+      "energy": { "text": "25 dmg, the enemy cannot heal next round", "effects": [ { "type": "applyStatus", "target": "enemy", "status": "healBlock", "turns": 1 } ] }
+    },
+    {
+      "id": "act_lightning", "name": "Lightning", "color": "#F5C518",
+      "raw": { "text": "20 dmg, d6 4-6 Stuns the enemy", "effects": [ { "type": "applyStatus", "target": "enemy", "status": "stun", "min": 4 } ] },
+      "energy": { "text": "25 dmg, d6 5-6 Stuns the enemy, otherwise +{value} dmg", "effects": [ { "type": "stunOrBonus", "min": 5, "value": 5 } ] }
+    },
+    {
+      "id": "act_earth", "name": "Earth", "color": "#A0652E",
+      "raw": { "text": "20 dmg, take {value} less damage from the next hit", "effects": [ { "type": "applyStatus", "target": "self", "status": "fortify", "value": 10 } ] },
+      "energy": { "text": "25 dmg, removes the active Scenario", "effects": [ { "type": "removeScenario" } ] }
+    },
+    {
+      "id": "act_sunlight", "name": "Sunlight", "color": "#F7A823",
+      "raw": { "text": "20 dmg, gain {value} Energy", "effects": [ { "type": "gainEnergy", "value": 5 } ] },
+      "energy": { "text": "25 dmg, +{value} dmg if no Scenario is active", "effects": [ { "type": "bonusDamageIfNoScenario", "value": 10 } ] }
+    },
+    {
+      "id": "act_magma", "name": "Magma", "color": "#D9411E",
+      "raw": { "text": "20 dmg, ignores {value}% of the enemy's Defense", "effects": [ { "type": "ignoreDefense", "value": 25 } ] },
+      "energy": { "text": "25 dmg, the enemy takes {value} HP each time it uses a special move, for 2 rounds", "effects": [ { "type": "applyStatus", "target": "enemy", "status": "backlash", "value": 5, "turns": 2 } ] }
+    },
+    {
+      "id": "act_spore", "name": "Spore", "color": "#6CC234",
+      "raw": { "text": "20 dmg, halves the enemy's healing for 2 rounds", "effects": [ { "type": "applyStatus", "target": "enemy", "status": "healHalve", "turns": 2 } ] },
+      "energy": { "text": "25 dmg, gain {value} Energy", "effects": [ { "type": "gainEnergy", "value": 10 } ] }
+    },
+    {
+      "id": "act_catalyst", "name": "Catalyst", "color": "#8B4FE0",
+      "raw": { "text": "20 dmg, your next action costs {value} less Energy", "effects": [ { "type": "applyStatus", "target": "self", "status": "discount", "value": 5 } ] },
+      "energy": { "text": "25 dmg, refund {value} Energy", "effects": [ { "type": "gainEnergy", "value": 10 } ] }
+    }
+  ]
+}
